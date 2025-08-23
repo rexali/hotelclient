@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Star, CheckCircle, Users, Shield, HeadphonesIcon, Search, ArrowRight, Home, Building, MapPin } from 'lucide-react';
+import { ChevronRight, Star, CheckCircle, Users, Shield, HeadphonesIcon, Search, ArrowRight, Home as HomeIcon, Building, MapPin } from 'lucide-react';
 import { mockRooms } from '../data/mockData';
 import RoomCard from '../components/UI/RoomCard';
 import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/UI/SearchFilters';
 
-const Home = () => {
+const Home:React.FC = () => {
   const [filteredRooms, setFilteredRooms] = useState(mockRooms);
 
   const handleSearch = (filters: SearchFiltersType) => {
@@ -130,7 +130,7 @@ const Home = () => {
       step: 4,
       title: 'Book & Move In',
       description: 'Complete the booking process online and get ready to move into your new home.',
-      icon: Home
+      icon: HomeIcon
     }
   ];
 
