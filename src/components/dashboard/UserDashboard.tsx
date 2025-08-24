@@ -1,66 +1,45 @@
-import { BarChart3, Bell, Heart, Home, MessageCircle, Plus, TrendingUp, User, Users } from "lucide-react";
+import { Bell, Heart, Home, MessageCircle,User, Users } from "lucide-react";
 import { useState } from "react";
 
-// Dashboard components (placeholder for now)
 export const UserDashboard = () => {
-  // (<div className="min-h-screen bg-gray-50 py-8">
-  //   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-  //     <h1 className="text-3xl font-bold text-gray-900 mb-8">User Dashboard</h1>
-  //     <div className="bg-white rounded-lg shadow p-8">
-  //       <p className="text-gray-600">User dashboard coming soon...</p>
-
-  //     </div>
-  //   </div>
-  // </div>);
-
+  
   const [activeTab, setActiveTab] = useState('profile');
   
   const tabs = [
-    { id: 'profile', name: 'Admin Profile', icon: User },
-    { id: 'properties', name: 'Properties', icon: Home },
-    { id: 'reports', name: 'Reports', icon: BarChart3 },
-    { id: 'analysis', name: 'Analysis', icon: TrendingUp },
-    { id: 'add-property', name: 'Add Property', icon: Plus },
-    { id: 'favorites', name: 'Favorite Properties', icon: Heart },
+    { id: 'profile', name: 'Profile', icon: User },
+    { id: 'rooms', name: 'Rooms', icon: Home },
+    { id: 'favorites', name: 'Favorite Rooms', icon: Heart },
     { id: 'messages', name: 'Messages', icon: MessageCircle },
     { id: 'notifications', name: 'Notifications', icon: Bell },
     { id: 'users', name: 'Registered Users', icon: Users },
-    { id: 'sales', name: 'Sales Progress', icon: TrendingUp },
   ];
 
 
     const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <div>profile tab</div>;
-      case 'properties':
-        return <div>properties</div>;
-      case 'add-property':
-        return <div>property tab</div>;
+        return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Profile</h2></div>;
+      case 'rooms':
+        return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Rooms</h2></div>;
+      case 'favorites':
+        return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Favorites</h2></div>;
       case 'users':
-        return <div>user tab</div>;
-      case 'reports':
+        return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Users</h2></div>;
+      case 'notifications':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Reports & Analytics</h2>
-            <div className="text-center py-12">
-              <BarChart3 className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">Reports and analytics dashboard coming soon...</p>
-            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Notifications</h2>
           </div>
         );
-      case 'analysis':
+
+      case 'messages':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Market Analysis</h2>
-            <div className="text-center py-12">
-              <TrendingUp className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">Market analysis tools coming soon...</p>
-            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Messages</h2>
           </div>
         );
       default:
-        return <div>profile tab</div>;
+        return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Profile</h2></div>;
     }
   };
 
@@ -79,34 +58,9 @@ export const UserDashboard = () => {
                 <p className="text-gray-600">Welcome back, {"Aliyu"}</p>
               </div>
             </div>
-            {/* <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-            >
-              Logout
-            </button> */}
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[].map((stat:any, index) => {
-            const Icon = stat?.icon;
-            return (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6">
-                <div className="flex items-center">
-                  <div className={`p-3 rounded-full bg-${stat.color}-100`}>
-                    <Icon className={`h-6 w-6 text-${stat.color}-600`} />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
         {/* Dashboard Tabs */}
         <div className="flex flex-col lg:flex-row gap-8">
