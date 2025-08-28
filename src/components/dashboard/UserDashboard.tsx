@@ -11,7 +11,7 @@ export const UserDashboard = () => {
     { id: 'favorites', name: 'Favorite Rooms', icon: Heart },
     { id: 'messages', name: 'Messages', icon: MessageCircle },
     { id: 'notifications', name: 'Notifications', icon: Bell },
-    { id: 'users', name: 'Registered Users', icon: Users },
+    // { id: 'users', name: 'Registered Users', icon: Users },
   ];
 
 
@@ -23,8 +23,8 @@ export const UserDashboard = () => {
         return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Rooms</h2></div>;
       case 'favorites':
         return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Favorites</h2></div>;
-      case 'users':
-        return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Users</h2></div>;
+      // case 'users':
+      //   return <div><h2 className="text-2xl font-bold text-gray-900 mb-6">Users</h2></div>;
       case 'notifications':
         return (
           <div>

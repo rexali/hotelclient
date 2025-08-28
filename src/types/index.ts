@@ -22,6 +22,7 @@ export interface Room {
 }
 
 export interface User {
+  fullName: string;
   id: string;
   name: string;
   email: string;
