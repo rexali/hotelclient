@@ -115,7 +115,8 @@ export const mockUsers: User[] = [
     country: 'Nigeria',
     role: 'user',
     favorites: ['1', '3'],
-    createdAt: new Date('2024-01-15')
+    createdAt: new Date('2024-01-15'),
+    fullName: ''
   },
   {
     id: 'admin1',
@@ -128,7 +129,8 @@ export const mockUsers: User[] = [
     country: 'Nigeria',
     role: 'admin',
     favorites: [],
-    createdAt: new Date('2023-12-01')
+    createdAt: new Date('2023-12-01'),
+    fullName: ''
   }
 ];
 

@@ -3,12 +3,13 @@ import { useState } from "react";
 import Rooms from "../../../pages/Rooms";
 import ProfileTab from "./ProfileTab";
 import { UsersTab } from "./UsersTab";
-import { FavouritesTab } from "./FavouritesTAb";
 import { MessagesTab } from "./MessagesTab";
 import { AnalysisTab } from "./Analysis";
 import { ReportTab } from "./ReportTab";
 import { NotificationsTab } from "./NotificatonsTab";
 import { BookingsTab } from "./BookingsTabs";
+import SavedTab from "./SavedTabs";
+
 
 export const AdminDashboard = () => {
 
@@ -30,40 +31,19 @@ export const AdminDashboard = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
-        return (
-          <div>
-            <ProfileTab />
-          </div>
-        );
+        return <ProfileTab />
       case 'rooms':
-        return (<div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Rooms</h2>
-          <Rooms />
-        </div>
-        );
+        return <Rooms />
       case 'bookings':
-        return (
-          <div>
-            <BookingsTab />
-          </div>
-        );
+        return <BookingsTab />
       case 'favorites':
-        return (
-          <div>
-            <FavouritesTab />
-          </div>
-        );
+        return <SavedTab />;
       case 'notifications':
         return <NotificationsTab />;
-
       case 'messages':
         return <MessagesTab />;
       case 'users':
-        return (
-          <div>
-            <UsersTab />
-          </div>
-        );
+        return <UsersTab />
       case 'reports':
         return <ReportTab />
       case 'analysis':
