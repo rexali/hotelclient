@@ -2,10 +2,10 @@ import { Bell, Heart, Home, MessageCircle,User} from "lucide-react";
 import { useState } from "react";
 import ProfileTab from "./ProfileTab";
 import { RoomsTab } from "./RoomsTab";
-import { FavouritesTab } from "../admin/FavouritesTAb";
 import { NotificationsTab } from "./NotificatonsTab";
 import { MessagesTab } from "./MessagesTab";
 import { BookingsTab } from "./BookingsTabs";
+import { FavouritesTab } from "./FavouritesTab";
 
 export const UserDashboard = () => {
   
@@ -18,7 +18,6 @@ export const UserDashboard = () => {
     { id: 'messages', name: 'Messages', icon: MessageCircle },
     { id: 'notifications', name: 'Notifications', icon: Bell },
   ];
-
 
     const renderTabContent = () => {
     switch (activeTab) {
