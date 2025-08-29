@@ -12,31 +12,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 import AdminAuth from './pages/AdminAuth';
-import { UserDashboard } from './components/dashboard/UserDashboard';
-import { AdminDashboard } from './components/dashboard/AdminDashboard';
-
-// Dashboard components (placeholder for now)
-// const UserDashboard = () => (
-//   <div className="min-h-screen bg-gray-50 py-8">
-//     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//       <h1 className="text-3xl font-bold text-gray-900 mb-8">User Dashboard</h1>
-//       <div className="bg-white rounded-lg shadow p-8">
-//         <p className="text-gray-600">User dashboard coming soon...</p>
-//       </div>
-//     </div>
-//   </div>
-// );
-
-// const AdminDashboard = () => (
-//   <div className="min-h-screen bg-gray-50 py-8">
-//     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//       <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
-//       <div className="bg-white rounded-lg shadow p-8">
-//         <p className="text-gray-600">Admin dashboard coming soon...</p>
-//       </div>
-//     </div>
-//   </div>
-// );
+import { UserDashboard } from './components/dashboard/user/UserDashboard';
+import { AdminDashboard } from './components/dashboard/admin/AdminDashboard';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({ 
