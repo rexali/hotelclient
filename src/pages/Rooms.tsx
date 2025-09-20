@@ -17,7 +17,7 @@ const Rooms: React.FC = () => {
     bedrooms: '',
     bathrooms: '',
     amenities: [],
-    availability: 'available'
+    availability:true,    //'available'
   });
 
   const filteredRooms = useMemo(() => {
@@ -30,7 +30,7 @@ const Rooms: React.FC = () => {
         (!filters.bedrooms || room.bedrooms.toString() === filters.bedrooms) &&
         (!filters.bathrooms || room.bathrooms.toString() === filters.bathrooms) &&
         (filters.amenities.length === 0 || filters.amenities.some(amenity => room.amenities.includes(amenity))) &&
-        (!filters.availability || filters.availability === 'all' || room.availability === filters.availability)
+        (!filters.availability || filters.availability === true || room.availability === filters.availability)
       );
     });
   }, [filters]);
@@ -168,7 +168,7 @@ const Rooms: React.FC = () => {
                 bedrooms: '',
                 bathrooms: '',
                 amenities: [],
-                availability: 'available'
+                availability: true
               })}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
             >

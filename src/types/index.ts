@@ -12,7 +12,7 @@ export interface Room {
   amenities: string[];
   images: string[];
   description: string;
-  availability: 'available' | 'occupied' | 'maintenance';
+  availability: true  //'available' | 'occupied' | 'maintenance';
   rating: number;
   featured: boolean;
   popular: boolean;

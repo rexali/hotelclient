@@ -16,12 +16,26 @@ export const mockRooms: Room[] = [
       'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg'
     ],
     description: 'A comfortable single room perfect for focused studying with all modern amenities.',
-    availability: 'available',
+    availability: true,
     rating: 4.8,
     featured: true,
     popular: true,
     newlyAdded: false,
     recentlySold: false,
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     recommended: true,
     agentName: 'John Doe',
     agentPhone: '+234 803 123 4567'
@@ -41,7 +55,7 @@ export const mockRooms: Room[] = [
       'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg'
     ],
     description: 'A well-designed double room for students who prefer shared accommodation.',
-    availability: 'available',
+    availability: true,
     rating: 4.5,
     featured: false,
     popular: true,
@@ -66,7 +80,7 @@ export const mockRooms: Room[] = [
       'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg'
     ],
     description: 'Spacious triple suite with executive amenities for comfortable group living.',
-    availability: 'occupied',
+    availability: true,
     rating: 4.7,
     featured: true,
     popular: false,
@@ -91,7 +105,7 @@ export const mockRooms: Room[] = [
       'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg'
     ],
     description: 'Affordable dormitory option for budget-conscious students.',
-    availability: 'available',
+    availability: true,
     rating: 4.2,
     featured: false,
     popular: false,
@@ -154,7 +168,7 @@ export const mockMessages: Message[] = [
     senderId: '1',
     receiverId: 'admin1',
     subject: 'Room Inquiry',
-    content: 'I would like to inquire about the availability of Premium Single Room A1.',
+    content: 'I would like to inquire about the availability otrueingle Room A1.',
     read: false,
     createdAt: new Date('2024-01-25')
   }

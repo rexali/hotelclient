@@ -32,13 +32,13 @@ const RoomCard: React.FC<RoomCardProps> = ({
     }).format(price);
   };
 
-  const getAvailabilityColor = (availability: string) => {
+  const getAvailabilityColor = (availability: boolean) => {
     switch (availability) {
-      case 'available':
+      case true:
         return 'bg-green-100 text-green-800';
-      case 'occupied':
+      case false: // occupied
         return 'bg-red-100 text-red-800';
-      case 'maintenance':
+      case false: // maintenance
         return 'bg-yellow-100 text-yellow-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -56,7 +56,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         />
         <div className="absolute top-4 left-4">
           <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getAvailabilityColor(room.availability)}`}>
-            {room.availability}
+            {room.availability === true ? "available" : "occupied"}
           </span>
         </div>
         <div className="absolute top-4 right-4 flex space-x-2">
@@ -73,11 +73,10 @@ const RoomCard: React.FC<RoomCardProps> = ({
         </div>
         <button
           onClick={() => onFavorite?.(room.id)}
-          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 ${
-            isFavorite
-              ? 'bg-red-500 text-white'
-              : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-500'
-          }`}
+          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 ${isFavorite
+            ? 'bg-red-500 text-white'
+            : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-500'
+            }`}
         >
           <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
         </button>
@@ -91,7 +90,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
           </h3>
           <div className="flex items-center space-x-1">
             <Star className="h-4 w-4 text-yellow-400 fill-current" />
-            <span className="text-sm text-gray-600">{room.rating}</span>
+            <span className="text-sm text-gray-600">{room?.rating}</span>
           </div>
         </div>
 
@@ -157,7 +156,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
               <span className="text-sm">Map</span>
             </button>
           </div>
-          
+
           <div className="flex space-x-1">
             <button
               onClick={() => onContact?.(room)}
@@ -166,7 +165,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
               <Phone className="h-4 w-4" />
               <span className="text-sm">Contact</span>
             </button>
-            {user && room.availability === 'available' && (
+            {user && room.availability === true && (
               <button
                 onClick={() => onPayment?.(room)}
                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"

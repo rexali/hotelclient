@@ -14,7 +14,7 @@ export interface SearchFilters {
   bedrooms: string;
   bathrooms: string;
   amenities: string[];
-  availability: string;
+  availability: true;
 }
 
 const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = false }) => {
@@ -26,7 +26,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = 
     bedrooms: '',
     bathrooms: '',
     amenities: [],
-    availability: 'available'
+    availability: true
   });
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
