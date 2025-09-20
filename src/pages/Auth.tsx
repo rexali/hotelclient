@@ -7,16 +7,16 @@ const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, register } = useAuth();
+  const { login, register, verifyToken, setUser } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    username: '',
     password: '',
     phone: '',
     address: '',
-    localGovernment: '',
+    localGovt: '',
     state: '',
     country: 'Nigeria'
   });
@@ -34,25 +34,34 @@ const Auth: React.FC = () => {
 
     try {
       if (isLogin) {
-        const success = await login(formData.email, formData.password);
+        const success = await login(formData.username, formData.password);
         if (success) {
-          navigate('/user-dashboard');
+          const user = await verifyToken();
+          setUser(user)
+          if (user) {
+            window.localStorage.setItem('currentUser', JSON.stringify(user))
+            navigate('/user-dashboard');
+          } else {
+            alert('Invalid verification credentials');
+          }
         } else {
-          alert('Invalid credentials. Try: john@student.edu');
+          alert('Invalid login credentials.');
         }
+
       } else {
         const success = await register({
           name: formData.name,
-          email: formData.email,
+          username: formData.username,
+          password: formData.password,
           phone: formData.phone,
           address: formData.address,
-          localGovernment: formData.localGovernment,
+          localGovt: formData.localGovt,
           state: formData.state,
           country: formData.country,
-          role: 'user'
+          role: 'user',
         });
-        if (success) {
-          navigate('/user-dashboard');
+        if (success === true) {
+          navigate('/');
         }
       }
     } catch (error) {
@@ -81,7 +90,7 @@ const Auth: React.FC = () => {
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            {isLogin 
+            {isLogin
               ? 'Sign in to access your student dashboard'
               : 'Join thousands of students finding their perfect accommodation'
             }
@@ -93,21 +102,19 @@ const Auth: React.FC = () => {
           <div className="flex bg-gray-100 rounded-lg p-1 mb-8">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${
-                isLogin
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${isLogin
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               Sign In
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${
-                !isLogin
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${!isLogin
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+                }`}
             >
               Sign Up
             </button>
@@ -123,6 +130,7 @@ const Auth: React.FC = () => {
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
+                    autoComplete='new-name'
                     id="name"
                     name="name"
                     type="text"
@@ -144,11 +152,12 @@ const Auth: React.FC = () => {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
-                  id="email"
-                  name="email"
+                  autoComplete='new-email'
+                  id="username"
+                  name="username"
                   type="email"
                   required
-                  value={formData.email}
+                  value={formData.username}
                   onChange={handleChange}
                   className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your email"
@@ -169,6 +178,7 @@ const Auth: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
+                  autoComplete='new-password'
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
@@ -199,6 +209,7 @@ const Auth: React.FC = () => {
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                       <input
+                        autoComplete='new-phone'
                         id="phone"
                         name="phone"
                         type="tel"
@@ -218,6 +229,7 @@ const Auth: React.FC = () => {
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                       <input
+                        autoComplete='new-address'
                         id="address"
                         name="address"
                         type="text"
@@ -232,15 +244,16 @@ const Auth: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="localGovernment" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="localGovt" className="block text-sm font-medium text-gray-700 mb-2">
                         Local Government
                       </label>
                       <input
-                        id="localGovernment"
-                        name="localGovernment"
+                        autoComplete='new-local-government'
+                        id="localGovt"
+                        name="localGovt"
                         type="text"
                         required={!isLogin}
-                        value={formData.localGovernment}
+                        value={formData.localGovt}
                         onChange={handleChange}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="LGA"
@@ -294,7 +307,7 @@ const Auth: React.FC = () => {
                 {isLogin ? 'Sign up' : 'Sign in'}
               </button>
             </p>
-            
+
             {isLogin && (
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <Link

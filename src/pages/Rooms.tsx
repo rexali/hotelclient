@@ -25,7 +25,7 @@ const Rooms: React.FC = () => {
       return (
         (!filters.location || room.location.toLowerCase().includes(filters.location.toLowerCase())) &&
         room.price >= filters.minPrice &&
-        room.price <= filters.maxPrice &&
+        room.price <= filters.maxPrice && 
         (!filters.roomType || room.type === filters.roomType) &&
         (!filters.bedrooms || room.bedrooms.toString() === filters.bedrooms) &&
         (!filters.bathrooms || room.bathrooms.toString() === filters.bathrooms) &&

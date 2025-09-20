@@ -1,3 +1,5 @@
+import { Dispatch } from "react";
+
 export interface Room {
   id: string;
   name: string;
@@ -69,9 +71,12 @@ export interface Notification {
 }
 
 export interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (userData: Omit<User, 'id' | 'favorites' | 'createdAt'>) => Promise<boolean>;
+  user: any | null;
+  login: (username: string, password: string) => Promise<boolean>;
+  register: (userData: any) => Promise<boolean>;
   logout: () => void;
-  updateProfile: (userData: Partial<User>) => void;
+  verifyToken: () => any;
+  setUser: Dispatch<any>;
+  updateProfile: (userData: any) => void;
+  getCSRFToken: () => void
 }

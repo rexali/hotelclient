@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Header from './components/Layout/Header';
@@ -16,24 +16,37 @@ import { UserDashboard } from './components/dashboard/user/UserDashboard';
 import { AdminDashboard } from './components/dashboard/admin/AdminDashboard';
 
 // Protected Route Component
-const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({ 
-  children, 
-  requiredRole 
+const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({
+  children,
+  requiredRole
 }) => {
   const { user } = useAuth();
-  
+
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
-  
+
   if (requiredRole && user.role !== requiredRole) {
     return <Navigate to="/" replace />;
   }
-  
+
   return <>{children}</>;
 };
 
 const AppContent: React.FC = () => {
+  const mountRef = useRef(true);
+  const { getCSRFToken } = useAuth();
+
+  useEffect(() => {
+    if (mountRef.current) {
+      getCSRFToken();
+    }
+    
+    return () => {
+      mountRef.current = false
+    }
+  })
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -46,21 +59,21 @@ const AppContent: React.FC = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin-auth" element={<AdminAuth />} />
-          <Route 
-            path="/user-dashboard" 
+          <Route
+            path="/user-dashboard"
             element={
               <ProtectedRoute requiredRole="user">
                 <UserDashboard />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/admin-dashboard" 
+          <Route
+            path="/admin-dashboard"
             element={
               <ProtectedRoute requiredRole="admin">
                 <AdminDashboard />
               </ProtectedRoute>
-            } 
+            }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

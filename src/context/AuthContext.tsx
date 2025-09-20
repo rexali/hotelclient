@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { AuthContextType, User } from '../types';
-import { mockUsers } from '../data/mockData';
+import { loginAPI } from '../api/loginAPI';
+import { verifyTokenAPI } from '../api/verifyTokenAPI';
+import { registerAPI } from '../api/registerAPI';
+import { getCSRFTokenAPI } from '../api/getCSRFTokenAPI';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  
+  const [user, setUser] = useState<any | null>({});
 
   useEffect(() => {
     const savedUser = localStorage.getItem('currentUser');
@@ -14,28 +18,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock authentication
-    const foundUser = mockUsers.find(u => u.email === email);
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem('currentUser', JSON.stringify(foundUser));
-      return true;
-    }
-    return false;
-  };
 
-  const register = async (userData: Omit<User, 'id' | 'favorites' | 'createdAt'>): Promise<boolean> => {
-    const newUser: User = {
-      ...userData,
-      id: Date.now().toString(),
-      favorites: [],
-      createdAt: new Date()
-    };
-    setUser(newUser);
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    return true;
-  };
+  const login = async (username: string, password: string): Promise<boolean> => {
+
+    try {
+
+      const result = await loginAPI({username , password });
+
+     
+      return result;
+
+    } catch (error) {
+
+      console.warn(error);
+      return false
+    }
+
+  }
+
+
+  
+  const verifyToken = async (): Promise<boolean> => {
+
+    try {
+
+      const result = await verifyTokenAPI();
+
+      return result;
+
+    } catch (error) {
+
+      console.warn(error);
+      return false
+    }
+
+  }
+
+
+  const register = async function register(data: any) {
+    try {
+      const userData = await registerAPI(data);
+      if (userData) {
+
+        return true
+      }
+
+      return false
+    } catch (error) {
+      console.warn(error);
+
+      return false
+    }
+  }
 
   const logout = () => {
     setUser(null);
@@ -50,8 +84,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const getCSRFToken = async function getCSRFToken() {
+    try {
+      await getCSRFTokenAPI();
+    } catch (error) {
+      console.warn(error);
+    }
+
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, updateProfile }}>
+    <AuthContext.Provider value={{
+      user,
+      login,
+      register,
+      logout,
+      verifyToken,
+      setUser,
+      getCSRFToken,
+      updateProfile
+    }}>
       {children}
     </AuthContext.Provider>
   );

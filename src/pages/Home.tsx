@@ -6,6 +6,7 @@ import RoomCard from '../components/UI/RoomCard';
 import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/UI/SearchFilters';
 
 const Home:React.FC = () => {
+
   const [filteredRooms, setFilteredRooms] = useState(mockRooms);
 
   const handleSearch = (filters: SearchFiltersType) => {
@@ -22,7 +23,7 @@ const Home:React.FC = () => {
     });
     setFilteredRooms(filtered);
   };
-
+  
   const featuredRooms = mockRooms.filter(room => room.featured);
   const popularRooms = mockRooms.filter(room => room.popular);
   const newlyAddedRooms = mockRooms.filter(room => room.newlyAdded);

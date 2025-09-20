@@ -6,11 +6,12 @@ import { useAuth } from '../context/AuthContext';
 const AdminAuth: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, verifyToken, setUser } = useAuth();
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
 
@@ -26,11 +27,19 @@ const AdminAuth: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(formData.email, formData.password);
+
+      const success = await login(formData.username, formData.password);
       if (success) {
-        navigate('/admin-dashboard');
+        const user = await verifyToken();
+        setUser(user)
+        if (user) {
+          window.localStorage.setItem('currentUser', JSON.stringify(user))
+          navigate('/admin-dashboard');
+        } else {
+          alert('Invalid verification credentials');
+        }
       } else {
-        alert('Invalid credentials. Try: admin@hostel.com');
+        alert('Invalid login credentials.');
       }
     } catch (error) {
       console.error('Auth error:', error);
@@ -62,17 +71,18 @@ const AdminAuth: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
                 Admin Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
+                  autoComplete='new-email'
+                  id="username"
+                  name="username"
+                  type="username"
                   required
-                  value={formData.email}
+                  value={formData.username}
                   onChange={handleChange}
                   className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter admin email"
@@ -91,6 +101,7 @@ const AdminAuth: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
+                  autoComplete='new-password'
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
