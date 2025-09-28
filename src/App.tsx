@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Header from './components/Layout/Header';
-import Footer from './components/Layout/Footer';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 
 // Pages
 import Home from './pages/Home';
@@ -12,8 +12,9 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 import AdminAuth from './pages/AdminAuth';
-import { UserDashboard } from './components/dashboard/user/UserDashboard';
-import { AdminDashboard } from './components/dashboard/admin/AdminDashboard';
+import RoomDetails from './pages/RoomDetails';
+import { UserDashboard } from './pages/dashboard/user/UserDashboard';
+import { AdminDashboard } from './pages/dashboard/admin/AdminDashboard';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({
@@ -41,7 +42,7 @@ const AppContent: React.FC = () => {
     if (mountRef.current) {
       getCSRFToken();
     }
-    
+
     return () => {
       mountRef.current = false
     }
@@ -54,6 +55,7 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/rooms" element={<Rooms />} />
+          <Route path="/rooms/:id" element={<RoomDetails />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

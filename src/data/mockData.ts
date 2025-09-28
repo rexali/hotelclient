@@ -19,26 +19,8 @@ export const mockRooms: Room[] = [
     availability: true,
     rating: 4.8,
     featured: true,
-    popular: true,
-    newlyAdded: false,
-    recentlySold: false,
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    recommended: true,
     agentName: 'John Doe',
-    agentPhone: '+234 803 123 4567'
+    agentPhone: '+234 803 123 4567',
   },
   {
     id: '2',
@@ -58,10 +40,6 @@ export const mockRooms: Room[] = [
     availability: true,
     rating: 4.5,
     featured: false,
-    popular: true,
-    newlyAdded: true,
-    recentlySold: false,
-    recommended: false,
     agentName: 'Jane Smith',
     agentPhone: '+234 805 987 6543'
   },
@@ -83,10 +61,6 @@ export const mockRooms: Room[] = [
     availability: true,
     rating: 4.7,
     featured: true,
-    popular: false,
-    newlyAdded: false,
-    recentlySold: true,
-    recommended: true,
     agentName: 'Mike Johnson',
     agentPhone: '+234 807 456 7890'
   },
@@ -108,10 +82,6 @@ export const mockRooms: Room[] = [
     availability: true,
     rating: 4.2,
     featured: false,
-    popular: false,
-    newlyAdded: true,
-    recentlySold: false,
-    recommended: false,
     agentName: 'Sarah Wilson',
     agentPhone: '+234 809 234 5678'
   }

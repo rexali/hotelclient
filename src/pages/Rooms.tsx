@@ -1,13 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { Grid, List } from 'lucide-react';
 import { mockRooms } from '../data/mockData';
-import RoomCard from '../components/UI/RoomCard';
-import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/UI/SearchFilters';
+import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
 import { Room } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { handleShare } from '../utils/handleShare';
+import RoomCard from '../components/rooms/RoomCard';
+import { useSearchParams } from 'react-router-dom';
+
 
 const Rooms: React.FC = () => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const featured = searchParams.get('featured');
+
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filters, setFilters] = useState<SearchFiltersType>({
     location: '',
@@ -17,15 +23,16 @@ const Rooms: React.FC = () => {
     bedrooms: '',
     bathrooms: '',
     amenities: [],
-    availability:true,    //'available'
+    availability: true,    //'available'
   });
 
   const filteredRooms = useMemo(() => {
+
     return mockRooms.filter(room => {
       return (
         (!filters.location || room.location.toLowerCase().includes(filters.location.toLowerCase())) &&
         room.price >= filters.minPrice &&
-        room.price <= filters.maxPrice && 
+        room.price <= filters.maxPrice &&
         (!filters.roomType || room.type === filters.roomType) &&
         (!filters.bedrooms || room.bedrooms.toString() === filters.bedrooms) &&
         (!filters.bathrooms || room.bathrooms.toString() === filters.bathrooms) &&
@@ -34,6 +41,8 @@ const Rooms: React.FC = () => {
       );
     });
   }, [filters]);
+
+
 
   const handleSearch = (newFilters: SearchFiltersType) => {
     setFilters(newFilters);
@@ -46,20 +55,6 @@ const Rooms: React.FC = () => {
     }
     // Handle favorite logic
     console.log('Toggle favorite for room:', roomId);
-  };
-
-  const handleShare = (room: Room) => {
-    if (navigator.share) {
-      navigator.share({
-        title: room.name,
-        text: `Check out this room: ${room.name}`,
-        url: `${window.location.origin}/rooms/${room.id}`
-      });
-    } else {
-      // Fallback to copying to clipboard
-      navigator.clipboard.writeText(`${window.location.origin}/rooms/${room.id}`);
-      alert('Room link copied to clipboard!');
-    }
   };
 
   const handleContact = (room: Room) => {
@@ -103,25 +98,23 @@ const Rooms: React.FC = () => {
               Showing results based on your search criteria
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-colors duration-200 ${
-                viewMode === 'grid'
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
+              className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === 'grid'
+                ? 'bg-blue-100 text-blue-600'
+                : 'text-gray-600 hover:bg-gray-100'
+                }`}
             >
               <Grid className="h-5 w-5" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-colors duration-200 ${
-                viewMode === 'list'
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
+              className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === 'list'
+                ? 'bg-blue-100 text-blue-600'
+                : 'text-gray-600 hover:bg-gray-100'
+                }`}
             >
               <List className="h-5 w-5" />
             </button>
@@ -135,7 +128,7 @@ const Rooms: React.FC = () => {
               ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
               : 'space-y-6'
           }>
-            {filteredRooms.map((room) => (
+            {featured? filteredRooms.filter(room => room.featured === true).map((room) => (
               <RoomCard
                 key={room.id}
                 room={room}
@@ -146,7 +139,19 @@ const Rooms: React.FC = () => {
                 onPayment={handlePayment}
                 isFavorite={user?.favorites?.includes(room.id)}
               />
-            ))}
+            ))
+              :
+              filteredRooms.map((room) => (
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  onFavorite={handleFavorite}
+                  onShare={handleShare}
+                  onContact={handleContact}
+                  onViewLocation={handleViewLocation}
+                  onPayment={handlePayment}
+                  isFavorite={user?.favorites?.includes(room.id)}
+                />))}
           </div>
         ) : (
           <div className="text-center py-12">

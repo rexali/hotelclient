@@ -1,6 +1,5 @@
 import { BarChart3, Bell, Heart, Home, MessageCircle, TrendingUp, User, Users, DollarSign } from "lucide-react";
 import { useState } from "react";
-import Rooms from "../../../pages/Rooms";
 import ProfileTab from "./ProfileTab";
 import { UsersTab } from "./UsersTab";
 import { MessagesTab } from "./MessagesTab";
@@ -9,6 +8,7 @@ import { ReportTab } from "./ReportTab";
 import { NotificationsTab } from "./NotificatonsTab";
 import { BookingsTab } from "./BookingsTabs";
 import SavedTab from "./SavedTabs";
+import { RoomsTab } from "./RoomsTab";
 
 
 export const AdminDashboard = () => {
@@ -33,7 +33,8 @@ export const AdminDashboard = () => {
       case 'profile':
         return <ProfileTab />
       case 'rooms':
-        return <Rooms />
+        // return <Rooms />
+        return <RoomsTab />
       case 'bookings':
         return <BookingsTab />
       case 'favorites':

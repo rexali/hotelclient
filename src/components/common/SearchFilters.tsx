@@ -54,7 +54,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = 
     const updatedAmenities = filters.amenities.includes(amenity)
       ? filters.amenities.filter(a => a !== amenity)
       : [...filters.amenities, amenity];
-    
+
     handleFilterChange('amenities', updatedAmenities);
   };
 
@@ -167,11 +167,10 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = 
               {amenitiesList.map(amenity => (
                 <label
                   key={amenity}
-                  className={`flex items-center space-x-2 px-3 py-2 border rounded-lg cursor-pointer transition-colors duration-200 ${
-                    filters.amenities.includes(amenity)
+                  className={`flex items-center space-x-2 px-3 py-2 border rounded-lg cursor-pointer transition-colors duration-200 ${filters.amenities.includes(amenity)
                       ? 'border-blue-500 bg-blue-50 text-blue-700'
                       : 'border-gray-300 hover:border-gray-400'
-                  }`}
+                    }`}
                 >
                   <input
                     type="checkbox"

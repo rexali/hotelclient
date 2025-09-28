@@ -1,5 +1,12 @@
 import { Dispatch } from "react";
 
+
+export interface ResponseType {
+    status: string;
+    data: any
+    message: string 
+}
+
 export interface Room {
   id: string;
   name: string;
@@ -12,13 +19,9 @@ export interface Room {
   amenities: string[];
   images: string[];
   description: string;
-  availability: true  //'available' | 'occupied' | 'maintenance';
+  availability: boolean;  //'available' | 'occupied' | 'maintenance';
   rating: number;
   featured: boolean;
-  popular: boolean;
-  newlyAdded: boolean;
-  recentlySold: boolean;
-  recommended: boolean;
   agentName: string;
   agentPhone: string;
 }

@@ -1,5 +1,5 @@
+import RoomCard from "../../../components/rooms/RoomCard";
 import { mockUsers, mockRooms } from "../../../data/mockData";
-import RoomCard from "../../UI/RoomCard";
 
   // List of all favorite rooms for all users (no duplicates)
   const SavedTab = () => {

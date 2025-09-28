@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Star, CheckCircle, Users, Shield, HeadphonesIcon, Search, ArrowRight, Home as HomeIcon, Building, MapPin } from 'lucide-react';
 import { mockRooms } from '../data/mockData';
-import RoomCard from '../components/UI/RoomCard';
-import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/UI/SearchFilters';
+import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
+import RoomCard from '../components/rooms/RoomCard';
 
 const Home:React.FC = () => {
 
@@ -417,7 +417,7 @@ const Home:React.FC = () => {
           </div>
         </div>
       </section>
-
+      
       {/* FAQ Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

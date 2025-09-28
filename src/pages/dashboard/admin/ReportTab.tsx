@@ -4,8 +4,8 @@ import { mockRooms } from "../../../data/mockData";
 export const ReportTab = ()=>{
         // Room stats
         const totalRooms = mockRooms.length;
-        const availableRooms = mockRooms.filter(r => r.availability === 'available').length;
-        const occupiedRooms = mockRooms.filter(r => r.availability === 'occupied').length;
+        const availableRooms = mockRooms.filter(r => r.availability === true).length;
+        const occupiedRooms = mockRooms.filter(r => r.availability === true).length;
         const avgPrice = totalRooms > 0 ? Math.round(mockRooms.reduce((sum, r) => sum + r.price, 0) / totalRooms) : 0;
         return (
           <div>

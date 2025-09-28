@@ -38,8 +38,8 @@ const RoomCard: React.FC<RoomCardProps> = ({
         return 'bg-green-100 text-green-800';
       case false: // occupied
         return 'bg-red-100 text-red-800';
-      case false: // maintenance
-        return 'bg-yellow-100 text-yellow-800';
+      // case false: // maintenance
+      //   return 'bg-yellow-100 text-yellow-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -65,11 +65,11 @@ const RoomCard: React.FC<RoomCardProps> = ({
               Featured
             </span>
           )}
-          {room.popular && (
+          {/* {room.popular && (
             <span className="px-2 py-1 bg-purple-500 text-white text-xs rounded-full">
               Popular
             </span>
-          )}
+          )} */}
         </div>
         <button
           onClick={() => onFavorite?.(room.id)}
@@ -170,7 +170,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
                 onClick={() => onPayment?.(room)}
                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
-                <CreditCard className="h-4 w-4" />
+                <CreditCard className="h-4 w-4"  />
                 <span className="text-sm">Book</span>
               </button>
             )}
