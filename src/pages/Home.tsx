@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Star, CheckCircle, Users, Shield, HeadphonesIcon, Search, ArrowRight, Home as HomeIcon, Building, MapPin } from 'lucide-react';
 import { mockRooms } from '../data/mockData';
 import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
 import RoomCard from '../components/rooms/RoomCard';
+import { getRoomsAPI } from './api/getRoomsAPI';
 
 const Home:React.FC = () => {
 
   const [filteredRooms, setFilteredRooms] = useState(mockRooms);
+  const moutRef = useRef(true);
+  const [data, setData] = useState<any>({});
+
+  
+    useEffect(() => {
+      if (moutRef.current) {
+        (async () => {
+          let data = await getRoomsAPI();
+          console.log(data);
+          setData(data);
+        })();
+      }
+      return () => {
+        moutRef.current = false
+      }
+    })
+  
+    // let roomsx = useMemo(()=>filterRooms(rooms,filters), [filters]);
+  
 
   const handleSearch = (filters: SearchFiltersType) => {
     let filtered = mockRooms.filter(room => {
@@ -18,17 +38,13 @@ const Home:React.FC = () => {
         (!filters.roomType || room.type === filters.roomType) &&
         (!filters.bedrooms || room.bedrooms.toString() === filters.bedrooms) &&
         (!filters.bathrooms || room.bathrooms.toString() === filters.bathrooms) &&
-        (filters.amenities.length === 0 || filters.amenities.some(amenity => room.amenities.includes(amenity)))
+        (filters.amenities?.length === 0 || filters.amenities.some(amenity => room.amenities.includes(amenity)))
       );
     });
+
     setFilteredRooms(filtered);
   };
   
-  const featuredRooms = mockRooms.filter(room => room.featured);
-  const popularRooms = mockRooms.filter(room => room.popular);
-  const newlyAddedRooms = mockRooms.filter(room => room.newlyAdded);
-  const recentlySoldRooms = mockRooms.filter(room => room.recentlySold);
-  const recommendedRooms = mockRooms.filter(room => room.recommended);
 
   const roomCategories = [
     {
@@ -257,7 +273,7 @@ const Home:React.FC = () => {
       </section>
 
       {/* Featured Rooms */}
-      {featuredRooms.length > 0 && (
+      {data?.featuredRooms?.length > 0 && (
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-12">
@@ -278,7 +294,7 @@ const Home:React.FC = () => {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredRooms.slice(0, 3).map((room) => (
+              {data?.featuredRooms.slice(0, 3).map((room:any) => (
                 <RoomCard key={room.id} room={room} />
               ))}
             </div>
@@ -287,7 +303,7 @@ const Home:React.FC = () => {
       )}
 
       {/* Popular Rooms */}
-      {popularRooms.length > 0 && (
+      {data?.popularRooms?.length > 0 && (
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-12">
@@ -308,7 +324,7 @@ const Home:React.FC = () => {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {popularRooms.slice(0, 3).map((room) => (
+              {data.popularRooms.slice(0, 3).map((room:any) => (
                 <RoomCard key={room.id} room={room} />
               ))}
             </div>

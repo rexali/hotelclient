@@ -1,20 +1,24 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Grid, List } from 'lucide-react';
-import { mockRooms } from '../data/mockData';
+// import { mockRooms } from '../data/mockData';
 import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
 import { Room } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { handleShare } from '../utils/handleShare';
 import RoomCard from '../components/rooms/RoomCard';
 import { useSearchParams } from 'react-router-dom';
+import { getRoomsAPI } from './api/getRoomsAPI';
+import { filterRooms } from './utils/filterRooms';
 
 
 const Rooms: React.FC = () => {
   const { user } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const featured = searchParams.get('featured');
-
+  const [rooms, setRooms] = useState<Array<Room>>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const moutRef = useRef(true);
+
   const [filters, setFilters] = useState<SearchFiltersType>({
     location: '',
     minPrice: 0,
@@ -26,21 +30,20 @@ const Rooms: React.FC = () => {
     availability: true,    //'available'
   });
 
-  const filteredRooms = useMemo(() => {
+  useEffect(() => {
+    if (moutRef.current) {
+      (async () => {
+        let data = await getRoomsAPI();
+        console.log(data);
+        setRooms(data?.rooms);
+      })();
+    }
+    return () => {
+      moutRef.current = false
+    }
+  })
 
-    return mockRooms.filter(room => {
-      return (
-        (!filters.location || room.location.toLowerCase().includes(filters.location.toLowerCase())) &&
-        room.price >= filters.minPrice &&
-        room.price <= filters.maxPrice &&
-        (!filters.roomType || room.type === filters.roomType) &&
-        (!filters.bedrooms || room.bedrooms.toString() === filters.bedrooms) &&
-        (!filters.bathrooms || room.bathrooms.toString() === filters.bathrooms) &&
-        (filters.amenities.length === 0 || filters.amenities.some(amenity => room.amenities.includes(amenity))) &&
-        (!filters.availability || filters.availability === true || room.availability === filters.availability)
-      );
-    });
-  }, [filters]);
+  // let roomsx = useMemo(()=>filterRooms(rooms,filters), [filters]);
 
 
 
@@ -92,7 +95,7 @@ const Rooms: React.FC = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              {filteredRooms.length} rooms found
+              {rooms?.length} rooms found
             </h2>
             <p className="text-sm text-gray-600">
               Showing results based on your search criteria
@@ -122,13 +125,13 @@ const Rooms: React.FC = () => {
         </div>
 
         {/* Results */}
-        {filteredRooms.length > 0 ? (
+        {rooms?.length > 0 ? (
           <div className={
             viewMode === 'grid'
               ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
               : 'space-y-6'
           }>
-            {featured? filteredRooms.filter(room => room.featured === true).map((room) => (
+            {featured ? rooms.filter(room => room.featured === true).map((room) => (
               <RoomCard
                 key={room.id}
                 room={room}
@@ -141,9 +144,9 @@ const Rooms: React.FC = () => {
               />
             ))
               :
-              filteredRooms.map((room) => (
+              rooms.map((room) => (
                 <RoomCard
-                  key={room.id}
+                  key={room.name}
                   room={room}
                   onFavorite={handleFavorite}
                   onShare={handleShare}

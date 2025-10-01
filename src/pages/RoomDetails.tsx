@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockRooms } from '../data/mockData';
+// import { mockRooms } from '../data/mockData';
 import RoomDetailsCard from '../components/rooms/RoomDetailsCard';
+import { Room } from '../types';
+import { getRoomAPI } from './api/getRoomAPI';
 
 const RoomDetails: React.FC = () => {
   // If using react-router-dom v6+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const room = mockRooms.find(r => r.id === id);
+  const [data, setData] = useState<Room>();
+  const room = data;   //.find(r => r.id === id);
+
+   useEffect(()=>{
+     (async ()=>{
+      setData(await getRoomAPI(id as unknown as number));
+     })
+   },[])
 
   if (!room) {
     return (

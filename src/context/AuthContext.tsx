@@ -43,6 +43,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
 
       const result = await verifyTokenAPI();
+      window.localStorage.setItem("userId",result.data?.userId);
+      window.localStorage.setItem("userId",result.data?.role);
+      window.localStorage.setItem("userId",result.data?.email);
+      window.localStorage.setItem("userId",JSON.stringify(result.data?.profile));
 
       return result;
 
@@ -90,7 +94,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.warn(error);
     }
-
   }
 
   return (

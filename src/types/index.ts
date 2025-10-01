@@ -17,7 +17,7 @@ export interface Room {
   bathrooms: number;
   capacity: number;
   amenities: string[];
-  images: string[];
+  photos: string[];
   description: string;
   availability: boolean;  //'available' | 'occupied' | 'maintenance';
   rating: number;
