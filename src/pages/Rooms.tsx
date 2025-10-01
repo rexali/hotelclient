@@ -1,6 +1,5 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Grid, List } from 'lucide-react';
-// import { mockRooms } from '../data/mockData';
 import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
 import { Room } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -8,13 +7,18 @@ import { handleShare } from '../utils/handleShare';
 import RoomCard from '../components/rooms/RoomCard';
 import { useSearchParams } from 'react-router-dom';
 import { getRoomsAPI } from './api/getRoomsAPI';
-import { filterRooms } from './utils/filterRooms';
 
 
 const Rooms: React.FC = () => {
   const { user } = useAuth();
   const [searchParams, _] = useSearchParams();
-  const featured = searchParams.get('featured');
+  const featured = Boolean(searchParams.get('featured'));
+  const popular = Boolean(searchParams.get('popular'));
+  const recommended = Boolean(searchParams.get('recommended'));
+  const recent = Boolean(searchParams.get('recent'));
+  const booked = Boolean(searchParams.get('booked'));
+
+
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const moutRef = useRef(true);
@@ -24,6 +28,7 @@ const Rooms: React.FC = () => {
     minPrice: 0,
     maxPrice: 100000,
     roomType: '',
+    type: '',
     bedrooms: '',
     bathrooms: '',
     amenities: [],
@@ -34,7 +39,6 @@ const Rooms: React.FC = () => {
     if (moutRef.current) {
       (async () => {
         let data = await getRoomsAPI();
-        console.log(data);
         setRooms(data?.rooms);
       })();
     }
@@ -43,13 +47,6 @@ const Rooms: React.FC = () => {
     }
   })
 
-  // let roomsx = useMemo(()=>filterRooms(rooms,filters), [filters]);
-
-
-
-  const handleSearch = (newFilters: SearchFiltersType) => {
-    setFilters(newFilters);
-  };
 
   const handleFavorite = (roomId: string) => {
     if (!user) {
@@ -89,7 +86,7 @@ const Rooms: React.FC = () => {
         </div>
 
         {/* Search Filters */}
-        <SearchFilters onSearch={handleSearch} showAdvanced={true} />
+        <SearchFilters showAdvanced={false} />
 
         {/* Results Header */}
         <div className="flex justify-between items-center mb-6">
@@ -131,22 +128,10 @@ const Rooms: React.FC = () => {
               ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
               : 'space-y-6'
           }>
-            {featured ? rooms.filter(room => room.featured === true).map((room) => (
-              <RoomCard
-                key={room.id}
-                room={room}
-                onFavorite={handleFavorite}
-                onShare={handleShare}
-                onContact={handleContact}
-                onViewLocation={handleViewLocation}
-                onPayment={handlePayment}
-                isFavorite={user?.favorites?.includes(room.id)}
-              />
-            ))
-              :
-              rooms.map((room) => (
+            {
+              featured ? rooms.filter(room => room.featured === true).map((room) => (
                 <RoomCard
-                  key={room.name}
+                  key={room.id}
                   room={room}
                   onFavorite={handleFavorite}
                   onShare={handleShare}
@@ -154,36 +139,100 @@ const Rooms: React.FC = () => {
                   onViewLocation={handleViewLocation}
                   onPayment={handlePayment}
                   isFavorite={user?.favorites?.includes(room.id)}
-                />))}
+                />
+              ))
+                : popular ? rooms.map((room) => (
+                  <RoomCard
+                    key={room.name}
+                    room={room}
+                    onFavorite={handleFavorite}
+                    onShare={handleShare}
+                    onContact={handleContact}
+                    onViewLocation={handleViewLocation}
+                    onPayment={handlePayment}
+                    isFavorite={user?.favorites?.includes(room.id)}
+                  />
+                ))
+                  : recommended ? rooms.map((room) => (
+                    <RoomCard
+                      key={room.name}
+                      room={room}
+                      onFavorite={handleFavorite}
+                      onShare={handleShare}
+                      onContact={handleContact}
+                      onViewLocation={handleViewLocation}
+                      onPayment={handlePayment}
+                      isFavorite={user?.favorites?.includes(room.id)}
+                    />
+                  ))
+                    : recent ? rooms.map((room) => (
+                      <RoomCard
+                        key={room.name}
+                        room={room}
+                        onFavorite={handleFavorite}
+                        onShare={handleShare}
+                        onContact={handleContact}
+                        onViewLocation={handleViewLocation}
+                        onPayment={handlePayment}
+                        isFavorite={user?.favorites?.includes(room.id)}
+                      />
+                    ))
+                      : booked ? rooms.map((room) => (
+                        <RoomCard
+                          key={room.name}
+                          room={room}
+                          onFavorite={handleFavorite}
+                          onShare={handleShare}
+                          onContact={handleContact}
+                          onViewLocation={handleViewLocation}
+                          onPayment={handlePayment}
+                          isFavorite={user?.favorites?.includes(room.id)}
+                        />
+                      ))
+                        : rooms.map((room) => (
+                          <RoomCard
+                            key={room.name}
+                            room={room}
+                            onFavorite={handleFavorite}
+                            onShare={handleShare}
+                            onContact={handleContact}
+                            onViewLocation={handleViewLocation}
+                            onPayment={handlePayment}
+                            isFavorite={user?.favorites?.includes(room.id)}
+                          />
+                        ))
+            }
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="mb-4">
-              <Grid className="h-16 w-16 text-gray-300 mx-auto" />
+        )
+          : (
+            <div className="text-center py-12">
+              <div className="mb-4">
+                <Grid className="h-16 w-16 text-gray-300 mx-auto" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No rooms found
+              </h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                Try adjusting your search filters or browse all available rooms.
+              </p>
+              <button
+                onClick={() => setFilters({
+                  location: '',
+                  minPrice: 0,
+                  maxPrice: 100000,
+                  roomType: '',
+                  type: '',
+                  bedrooms: '',
+                  bathrooms: '',
+                  amenities: [],
+                  availability: true
+                })}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Clear Filters
+              </button>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No rooms found
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Try adjusting your search filters or browse all available rooms.
-            </p>
-            <button
-              onClick={() => setFilters({
-                location: '',
-                minPrice: 0,
-                maxPrice: 100000,
-                roomType: '',
-                bedrooms: '',
-                bathrooms: '',
-                amenities: [],
-                availability: true
-              })}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-            >
-              Clear Filters
-            </button>
-          </div>
-        )}
+          )}
       </div>
     </div>
   );

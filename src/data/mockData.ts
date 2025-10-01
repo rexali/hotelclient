@@ -11,9 +11,9 @@ export const mockRooms: Room[] = [
     bathrooms: 1,
     capacity: 1,
     amenities: ['WiFi', 'AC', 'Study Desk', 'Wardrobe', 'Private Bathroom'],
-    images: [
-      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg',
-      'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg'
+    photos: [
+      'https://photos.pexels.com/photos/164595/pexels-photo-164595.jpeg',
+      'https://photos.pexels.com/photos/271618/pexels-photo-271618.jpeg'
     ],
     description: 'A comfortable single room perfect for focused studying with all modern amenities.',
     availability: true,
@@ -32,9 +32,9 @@ export const mockRooms: Room[] = [
     bathrooms: 1,
     capacity: 2,
     amenities: ['WiFi', 'AC', 'Study Desk', 'Shared Kitchen', 'Laundry'],
-    images: [
-      'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg',
-      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg'
+    photos: [
+      'https://photos.pexels.com/photos/271618/pexels-photo-271618.jpeg',
+      'https://photos.pexels.com/photos/164595/pexels-photo-164595.jpeg'
     ],
     description: 'A well-designed double room for students who prefer shared accommodation.',
     availability: true,
@@ -53,9 +53,9 @@ export const mockRooms: Room[] = [
     bathrooms: 2,
     capacity: 3,
     amenities: ['WiFi', 'AC', 'Study Area', 'Kitchen', 'Parking', 'Security'],
-    images: [
-      'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg',
-      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg'
+    photos: [
+      'https://photos.pexels.com/photos/271618/pexels-photo-271618.jpeg',
+      'https://photos.pexels.com/photos/164595/pexels-photo-164595.jpeg'
     ],
     description: 'Spacious triple suite with executive amenities for comfortable group living.',
     availability: true,
@@ -74,9 +74,9 @@ export const mockRooms: Room[] = [
     bathrooms: 2,
     capacity: 8,
     amenities: ['WiFi', 'Shared Kitchen', 'Study Hall', 'Common Area'],
-    images: [
-      'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg',
-      'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg'
+    photos: [
+      'https://photos.pexels.com/photos/164595/pexels-photo-164595.jpeg',
+      'https://photos.pexels.com/photos/271618/pexels-photo-271618.jpeg'
     ],
     description: 'Affordable dormitory option for budget-conscious students.',
     availability: true,

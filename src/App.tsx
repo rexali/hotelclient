@@ -15,6 +15,7 @@ import AdminAuth from './pages/AdminAuth';
 import RoomDetails from './pages/RoomDetails';
 import { UserDashboard } from './pages/dashboard/user/UserDashboard';
 import { AdminDashboard } from './pages/dashboard/admin/AdminDashboard';
+import Searchs from './pages/Search';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({
@@ -55,6 +56,7 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/rooms" element={<Rooms />} />
+          <Route path="/search" element={<Searchs />} />
           <Route path="/rooms/:id" element={<RoomDetails />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />

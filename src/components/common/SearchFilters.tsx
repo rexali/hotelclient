@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Search, Filter, MapPin, DollarSign, Home, Users } from 'lucide-react';
+import { Filter, MapPin, DollarSign, SearchIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchFiltersProps {
-  onSearch: (filters: SearchFilters) => void;
   showAdvanced?: boolean;
 }
 
@@ -11,17 +11,20 @@ export interface SearchFilters {
   minPrice: number;
   maxPrice: number;
   roomType: string;
+  type: string;
   bedrooms: string;
   bathrooms: string;
   amenities: string[];
   availability: true;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = false }) => {
+const SearchFilters: React.FC<SearchFiltersProps> = ({showAdvanced = false }) => {
+  const navigate = useNavigate()
   const [filters, setFilters] = useState<SearchFilters>({
     location: '',
     minPrice: 0,
     maxPrice: 100000,
+    type: '',
     roomType: '',
     bedrooms: '',
     bathrooms: '',
@@ -44,10 +47,9 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = 
     'Shared Kitchen', 'Laundry', 'Parking', 'Security', 'Gym'
   ];
 
-  const handleFilterChange = (key: keyof SearchFilters, value: any) => {
+  const handleFilterChange = async (key: keyof SearchFilters, value: any) => {
     const updatedFilters = { ...filters, [key]: value };
     setFilters(updatedFilters);
-    onSearch(updatedFilters);
   };
 
   const handleAmenityToggle = (amenity: string) => {
@@ -103,6 +105,14 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = 
         >
           <Filter className="h-5 w-5" />
           <span>Filters</span>
+        </button>
+
+        <button
+          onClick={() => navigate("/search?" + new URLSearchParams({ ...filters as any }).toString())}
+          className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+        >
+          <SearchIcon className="h-5 w-5" />
+          <span>Search</span>
         </button>
       </div>
 
@@ -168,8 +178,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch, showAdvanced = 
                 <label
                   key={amenity}
                   className={`flex items-center space-x-2 px-3 py-2 border rounded-lg cursor-pointer transition-colors duration-200 ${filters.amenities.includes(amenity)
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-300 hover:border-gray-400'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-300 hover:border-gray-400'
                     }`}
                 >
                   <input

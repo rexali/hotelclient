@@ -13,7 +13,7 @@ const initialRoom: Room = {
     bathrooms: 1,
     capacity: 1,
     amenities: [],
-    images: [],
+    photos: [],
     description: '',
     availability: true,
     rating: 0,
@@ -84,7 +84,7 @@ export default function RoomAdd({ handleRoomAdd }: { handleRoomAdd: (room: Room)
         formData.append('bathrooms', room.bathrooms);
         formData.append('capacity', room.capacity);
         formData.append('amenities', room.amenities);
-        formData.append('images', room.images);
+        formData.append('photos', room.photos);
         formData.append('availability', room.availability);
         formData.append('rating', room.rating);
         formData.append("featured", room.featured);
@@ -123,6 +123,7 @@ export default function RoomAdd({ handleRoomAdd }: { handleRoomAdd: (room: Room)
                         value={room.name}
                         onChange={handleChange}
                         required
+                        placeholder='e.g., Room 1, Room 2; Suite 1, Suite 2 etc'
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
@@ -253,9 +254,9 @@ export default function RoomAdd({ handleRoomAdd }: { handleRoomAdd: (room: Room)
                     })
                 }
                 <input
-                    name="images"
+                    name="photos"
                     type='file'
-                    // value={room.images.join(', ')}
+                    // value={room.photos.join(', ')}
                     onChange={handleImagesChange}
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     formEncType='multipart/form-data'

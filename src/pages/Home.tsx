@@ -1,50 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Star, CheckCircle, Users, Shield, HeadphonesIcon, Search, ArrowRight, Home as HomeIcon, Building, MapPin } from 'lucide-react';
-import { mockRooms } from '../data/mockData';
-import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
+import SearchFilters from '../components/common/SearchFilters';
 import RoomCard from '../components/rooms/RoomCard';
 import { getRoomsAPI } from './api/getRoomsAPI';
 
-const Home:React.FC = () => {
+const Home: React.FC = () => {
 
-  const [filteredRooms, setFilteredRooms] = useState(mockRooms);
   const moutRef = useRef(true);
   const [data, setData] = useState<any>({});
+console.log(data);
 
-  
-    useEffect(() => {
-      if (moutRef.current) {
-        (async () => {
-          let data = await getRoomsAPI();
-          console.log(data);
-          setData(data);
-        })();
-      }
-      return () => {
-        moutRef.current = false
-      }
-    })
-  
-    // let roomsx = useMemo(()=>filterRooms(rooms,filters), [filters]);
-  
+  useEffect(() => {
+    if (moutRef.current) {
+      (async () => {
+        let data = await getRoomsAPI();
+        setData(data);
+      })();
+    }
+    return () => {
+      moutRef.current = false
+    }
+  })
 
-  const handleSearch = (filters: SearchFiltersType) => {
-    let filtered = mockRooms.filter(room => {
-      return (
-        (!filters.location || room.location.toLowerCase().includes(filters.location.toLowerCase())) &&
-        room.price >= filters.minPrice &&
-        room.price <= filters.maxPrice &&
-        (!filters.roomType || room.type === filters.roomType) &&
-        (!filters.bedrooms || room.bedrooms.toString() === filters.bedrooms) &&
-        (!filters.bathrooms || room.bathrooms.toString() === filters.bathrooms) &&
-        (filters.amenities?.length === 0 || filters.amenities.some(amenity => room.amenities.includes(amenity)))
-      );
-    });
-
-    setFilteredRooms(filtered);
-  };
-  
 
   const roomCategories = [
     {
@@ -52,28 +30,28 @@ const Home:React.FC = () => {
       description: 'Perfect for focused studying',
       image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg',
       link: '/rooms?type=single',
-      count: mockRooms.filter(r => r.type === 'single').length
+      count: data?.rooms?.filter((r: any) => r.type === 'single').length
     },
     {
       name: 'Double Rooms',
       description: 'Great for shared living',
       image: 'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg',
       link: '/rooms?type=double',
-      count: mockRooms.filter(r => r.type === 'double').length
+      count: data?.rooms?.filter((r: any) => r.type === 'double').length
     },
     {
       name: 'Triple Suites',
       description: 'Spacious group accommodation',
       image: 'https://images.pexels.com/photos/1743559/pexels-photo-1743559.jpeg',
       link: '/rooms?type=triple',
-      count: mockRooms.filter(r => r.type === 'triple').length
+      count: data?.rooms?.filter((r: any) => r.type === 'triple').length
     },
     {
       name: 'Dormitories',
       description: 'Budget-friendly options',
       image: 'https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg',
       link: '/rooms?type=dormitory',
-      count: mockRooms.filter(r => r.type === 'dormitory').length
+      count: data?.rooms?.filter((r: any) => r.type === 'dormitory').length
     }
   ];
 
@@ -195,7 +173,7 @@ const Home:React.FC = () => {
               Use our advanced search filters to find accommodation that perfectly matches your needs and budget.
             </p>
           </div>
-          <SearchFilters onSearch={handleSearch} />
+          <SearchFilters  />
         </div>
       </section>
 
@@ -294,7 +272,7 @@ const Home:React.FC = () => {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {data?.featuredRooms.slice(0, 3).map((room:any) => (
+              {data?.featuredRooms.slice(0, 3).map((room: any) => (
                 <RoomCard key={room.id} room={room} />
               ))}
             </div>
@@ -324,13 +302,17 @@ const Home:React.FC = () => {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {data.popularRooms.slice(0, 3).map((room:any) => (
+              {data.popularRooms.slice(0, 3).map((room: any) => (
                 <RoomCard key={room.id} room={room} />
               ))}
             </div>
           </div>
         </section>
       )}
+
+      {/* Recent Rooms */}
+      {/* Recommended Rooms */}
+      {/* Booked Rooms */}
 
       {/* How It Works */}
       <section className="py-16 bg-gray-50">
@@ -433,7 +415,7 @@ const Home:React.FC = () => {
           </div>
         </div>
       </section>
-      
+
       {/* FAQ Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
