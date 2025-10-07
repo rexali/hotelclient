@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface SearchFiltersProps {
   showAdvanced?: boolean;
+  newFilter?: any
 }
 
 export interface SearchFilters {
@@ -15,22 +16,23 @@ export interface SearchFilters {
   bedrooms: string;
   bathrooms: string;
   amenities: string[];
-  availability: true;
+  availability: boolean;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({showAdvanced = false }) => {
+const initialFilter = {
+  location: '',
+  minPrice: 0,
+  maxPrice: 100000,
+  type: '',
+  roomType: '',
+  bedrooms: '',
+  bathrooms: '',
+  amenities: [],
+  availability: true
+}
+const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, newFilter = { ...initialFilter } }) => {
   const navigate = useNavigate()
-  const [filters, setFilters] = useState<SearchFilters>({
-    location: '',
-    minPrice: 0,
-    maxPrice: 100000,
-    type: '',
-    roomType: '',
-    bedrooms: '',
-    bathrooms: '',
-    amenities: [],
-    availability: true
-  });
+  const [filters, setFilters] = useState<SearchFilters>(newFilter);
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 

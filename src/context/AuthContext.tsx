@@ -36,8 +36,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   }
 
-
-  
   const verifyToken = async (): Promise<boolean> => {
 
     try {

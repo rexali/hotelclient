@@ -4,24 +4,24 @@ import { getRegisteredUsersAPI } from "./api/getRegisteredUsersAPI";
 import UserDetails from "./UserDetails";
 import { BASE_URL_LOCAL } from "../../../constants/constants";
 import { ResponseType } from "../../../types";
+import Pagination from "../../../components/common/Pagination";
 
 export const UsersTab = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
 
   useEffect(() => {
     (async () => {
-      let result = await getRegisteredUsersAPI();
-      setData(result)
+      let result = await getRegisteredUsersAPI(currentPage);
+      setTotalPages(result.profileCount)
+      setData(result?.profiles)
     })();
-  }, []);
+  }, [currentPage]);
 
   if (open) {
     return <UserDetails setOpen={setOpen} />
-  }
-
-  if (data.length === 0) {
-    return <div className="text-center">No registered user</div>
   }
 
   if (data === null || undefined) {
@@ -43,7 +43,7 @@ export const UsersTab = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                User
+                name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
@@ -60,13 +60,14 @@ export const UsersTab = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((user: any) => (
+            {data?.length === 0 && <tr><td className="text-center" colSpan={5}>No registered user</td></tr>}
+            {data?.map((user: any) => (
               <tr key={user.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src={user?.image? BASE_URL_LOCAL + "/uploads/" + user?.image : 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'}
+                      src={user?.image ? BASE_URL_LOCAL + "/uploads/" + user?.image : 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'}
                       alt={user?.image}
                       width={10}
                       height={10}
@@ -102,6 +103,9 @@ export const UsersTab = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} /><br />
       </div>
     </div>
   );

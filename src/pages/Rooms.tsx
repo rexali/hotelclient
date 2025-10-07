@@ -1,75 +1,76 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, List } from 'lucide-react';
 import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
 import { Room } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { handleShare } from '../utils/handleShare';
 import RoomCard from '../components/rooms/RoomCard';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getRoomsAPI } from './api/getRoomsAPI';
+import { toast } from 'sonner';
+import { addFavouriteRoomAPI } from './api/addFavouriteRoomAPI';
+import { makePaymentAPI } from '../payment/makePaymentAPI';
+import { handleViewLocation } from '../utils/handleViewLocation';
+import Pagination from '../components/common/Pagination';
 
 
+const initialFilter = {
+  location: '',
+  minPrice: 0,
+  maxPrice: 100000,
+  roomType: '',
+  type: '',
+  bedrooms: '',
+  bathrooms: '',
+  amenities: [],
+  availability: true,    //'available'
+}
 const Rooms: React.FC = () => {
+
   const { user } = useAuth();
+  const navigate = useNavigate()
   const [searchParams, _] = useSearchParams();
   const featured = Boolean(searchParams.get('featured'));
   const popular = Boolean(searchParams.get('popular'));
   const recommended = Boolean(searchParams.get('recommended'));
   const recent = Boolean(searchParams.get('recent'));
   const booked = Boolean(searchParams.get('booked'));
-
-
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const moutRef = useRef(true);
-
-  const [filters, setFilters] = useState<SearchFiltersType>({
-    location: '',
-    minPrice: 0,
-    maxPrice: 100000,
-    roomType: '',
-    type: '',
-    bedrooms: '',
-    bathrooms: '',
-    amenities: [],
-    availability: true,    //'available'
-  });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [filter, setFilters] = useState<SearchFiltersType>({ ...initialFilter });
 
   useEffect(() => {
-    if (moutRef.current) {
-      (async () => {
-        let data = await getRoomsAPI();
-        setRooms(data?.rooms);
-      })();
-    }
-    return () => {
-      moutRef.current = false
-    }
-  })
+    (async () => {
+      let data = await getRoomsAPI(currentPage);
+      setTotalPages(100)
+      setRooms(data?.rooms);
+    })();
 
+  }, [currentPage])
 
-  const handleFavorite = (roomId: string) => {
-    if (!user) {
+  const handleAddFavourite = async (roomId: any) => {
+    if (user.userId) {
+      let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+      if (result) {
+        toast(result)
+      }
       // Redirect to login or show login modal
-      return;
+    } else {
+      navigate("/auth")
     }
-    // Handle favorite logic
-    console.log('Toggle favorite for room:', roomId);
+
   };
 
-  const handleContact = (room: Room) => {
+  const handleContact = (phone: string) => {
     // Open contact modal or redirect to contact form
-    alert(`Contact ${room.agentName} at ${room.agentPhone}`);
+    return phone;
   };
 
-  const handleViewLocation = (room: Room) => {
-    // Open map modal or redirect to maps
-    alert(`View location: ${room.location}`);
-  };
-
-  const handlePayment = (room: Room) => {
+  const handlePayment = async (roomId: any, roomPrice: any) => {
     // Redirect to payment page or open payment modal
-    alert(`Booking ${room.name} for ${room.price}`);
+    await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
   };
 
   return (
@@ -86,7 +87,7 @@ const Rooms: React.FC = () => {
         </div>
 
         {/* Search Filters */}
-        <SearchFilters showAdvanced={false} />
+        <SearchFilters showAdvanced={false} newFilter={filter} />
 
         {/* Results Header */}
         <div className="flex justify-between items-center mb-6">
@@ -122,30 +123,20 @@ const Rooms: React.FC = () => {
         </div>
 
         {/* Results */}
+
         {rooms?.length > 0 ? (
-          <div className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-              : 'space-y-6'
-          }>
-            {
-              featured ? rooms.filter(room => room.featured === true).map((room) => (
-                <RoomCard
-                  key={room.id}
-                  room={room}
-                  onFavorite={handleFavorite}
-                  onShare={handleShare}
-                  onContact={handleContact}
-                  onViewLocation={handleViewLocation}
-                  onPayment={handlePayment}
-                  isFavorite={user?.favorites?.includes(room.id)}
-                />
-              ))
-                : popular ? rooms.map((room) => (
+          <div>
+            <div className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+                : 'space-y-6'
+            }>
+              {
+                featured ? rooms.filter(room => room.featured === true).map((room) => (
                   <RoomCard
-                    key={room.name}
+                    key={room.id}
                     room={room}
-                    onFavorite={handleFavorite}
+                    onFavorite={handleAddFavourite}
                     onShare={handleShare}
                     onContact={handleContact}
                     onViewLocation={handleViewLocation}
@@ -153,11 +144,11 @@ const Rooms: React.FC = () => {
                     isFavorite={user?.favorites?.includes(room.id)}
                   />
                 ))
-                  : recommended ? rooms.map((room) => (
+                  : popular ? rooms.map((room) => (
                     <RoomCard
                       key={room.name}
                       room={room}
-                      onFavorite={handleFavorite}
+                      onFavorite={handleAddFavourite}
                       onShare={handleShare}
                       onContact={handleContact}
                       onViewLocation={handleViewLocation}
@@ -165,11 +156,11 @@ const Rooms: React.FC = () => {
                       isFavorite={user?.favorites?.includes(room.id)}
                     />
                   ))
-                    : recent ? rooms.map((room) => (
+                    : recommended ? rooms.map((room) => (
                       <RoomCard
                         key={room.name}
                         room={room}
-                        onFavorite={handleFavorite}
+                        onFavorite={handleAddFavourite}
                         onShare={handleShare}
                         onContact={handleContact}
                         onViewLocation={handleViewLocation}
@@ -177,11 +168,11 @@ const Rooms: React.FC = () => {
                         isFavorite={user?.favorites?.includes(room.id)}
                       />
                     ))
-                      : booked ? rooms.map((room) => (
+                      : recent ? rooms.map((room) => (
                         <RoomCard
                           key={room.name}
                           room={room}
-                          onFavorite={handleFavorite}
+                          onFavorite={handleAddFavourite}
                           onShare={handleShare}
                           onContact={handleContact}
                           onViewLocation={handleViewLocation}
@@ -189,11 +180,11 @@ const Rooms: React.FC = () => {
                           isFavorite={user?.favorites?.includes(room.id)}
                         />
                       ))
-                        : rooms.map((room) => (
+                        : booked ? rooms.map((room) => (
                           <RoomCard
                             key={room.name}
                             room={room}
-                            onFavorite={handleFavorite}
+                            onFavorite={handleAddFavourite}
                             onShare={handleShare}
                             onContact={handleContact}
                             onViewLocation={handleViewLocation}
@@ -201,7 +192,22 @@ const Rooms: React.FC = () => {
                             isFavorite={user?.favorites?.includes(room.id)}
                           />
                         ))
-            }
+                          : rooms.map((room) => (
+                            <RoomCard
+                              key={room.name}
+                              room={room}
+                              onFavorite={handleAddFavourite}
+                              onShare={handleShare}
+                              onContact={handleContact}
+                              onViewLocation={handleViewLocation}
+                              onPayment={handlePayment}
+                              isFavorite={user?.favorites?.includes(room.id)}
+                            />
+                          ))
+              }
+
+            </div>
+
           </div>
         )
           : (
@@ -234,8 +240,11 @@ const Rooms: React.FC = () => {
             </div>
           )}
       </div>
+      <div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} /><br />
+      </div>
     </div>
   );
-};
+}; 
 
 export default Rooms;

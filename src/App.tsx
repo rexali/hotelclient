@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import { Toaster } from "sonner";
 
 // Pages
 import Home from './pages/Home';
@@ -16,6 +17,7 @@ import RoomDetails from './pages/RoomDetails';
 import { UserDashboard } from './pages/dashboard/user/UserDashboard';
 import { AdminDashboard } from './pages/dashboard/admin/AdminDashboard';
 import Searchs from './pages/Search';
+import Webhook from './pages/Webhook';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({
@@ -63,6 +65,8 @@ const AppContent: React.FC = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin-auth" element={<AdminAuth />} />
+          <Route path="/webhook" element={<Webhook />} />
+
           <Route
             path="/user-dashboard"
             element={
@@ -82,6 +86,7 @@ const AppContent: React.FC = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <Toaster />
       <Footer />
     </div>
   );

@@ -1,19 +1,22 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { config } from "../config/config";
 import { ResponseType } from "../types";
 
-export const useRooms = () => {
-    const [rooms, setRooms] = useState([]);
-    const mountRef = useRef(true);
+export const useRooms = (page: number) => {
+    const [data, setData] = useState({});
 
-    const getRoomsAPI = async function getRoomsAPI() {
+    const getRoomsAPI = async function getRoomsAPI(page: number) {
         try {
-            const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/rooms", { credentials: 'include' });
+            const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/rooms?page=" + page,
+                {
+                    credentials: 'include'
+
+                });
 
             const result = await response.json() as ResponseType;
             if (result.status === 'success') {
 
-                setRooms(result.data.rooms);
+                setData(result?.data);
             }
 
         } catch (error) {
@@ -23,15 +26,9 @@ export const useRooms = () => {
     }
 
     useEffect(() => {
-        if (mountRef.current) {
-            getRoomsAPI();
-        }
+        getRoomsAPI(page);
+    }, [page]);
 
-        return () => {
-            mountRef.current = false;
-        }
-    });
-
-    return { rooms }
+    return data
 
 }

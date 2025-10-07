@@ -28,7 +28,7 @@ export const getSearchedRoomAPI = async function getSearchedRoomAPI(query: any) 
         const result = await response.json() as ResponseType;
         if (result.status === 'success') {
 
-            return result.data.rooms;
+            return result.data?.rooms;
         }
 
     } catch (error) {

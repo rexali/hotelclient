@@ -1,15 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Star, CheckCircle, Users, Shield, HeadphonesIcon, Search, ArrowRight, Home as HomeIcon, Building, MapPin } from 'lucide-react';
 import SearchFilters from '../components/common/SearchFilters';
 import RoomCard from '../components/rooms/RoomCard';
 import { getRoomsAPI } from './api/getRoomsAPI';
+import { addFavouriteRoomAPI } from './api/addFavouriteRoomAPI';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'sonner';
+import { makePaymentAPI } from '../payment/makePaymentAPI';
+import { handleShare } from '../utils/handleShare';
+import { handleViewLocation } from '../utils/handleViewLocation';
 
 const Home: React.FC = () => {
-
+  const { user } = useAuth()
   const moutRef = useRef(true);
   const [data, setData] = useState<any>({});
-console.log(data);
+  const navigate = useNavigate();
+
+  const handlePayment = async (roomId: any, roomPrice: any) => {
+    await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
+  };
+
+  const handleAddFavourite = async (roomId: any) => {
+    if (user.userId) {
+      let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+      if (result) {
+        toast(result)
+      }
+    } else {
+      navigate("/auth")
+    }
+
+  };
+  
 
   useEffect(() => {
     if (moutRef.current) {
@@ -173,7 +196,7 @@ console.log(data);
               Use our advanced search filters to find accommodation that perfectly matches your needs and budget.
             </p>
           </div>
-          <SearchFilters  />
+          <SearchFilters />
         </div>
       </section>
 
@@ -273,7 +296,14 @@ console.log(data);
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {data?.featuredRooms.slice(0, 3).map((room: any) => (
-                <RoomCard key={room.id} room={room} />
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  onViewLocation={handleViewLocation}
+                  onShare={handleShare}
+                  onPayment={handlePayment}
+                  onFavorite={handleAddFavourite}
+                />
               ))}
             </div>
           </div>
@@ -303,7 +333,14 @@ console.log(data);
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {data.popularRooms.slice(0, 3).map((room: any) => (
-                <RoomCard key={room.id} room={room} />
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  onViewLocation={handleViewLocation}
+                  onShare={handleShare}
+                  onPayment={handlePayment}
+                  onFavorite={handleAddFavourite}
+                />
               ))}
             </div>
           </div>

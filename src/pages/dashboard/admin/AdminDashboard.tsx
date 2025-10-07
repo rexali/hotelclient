@@ -18,13 +18,13 @@ export const AdminDashboard = () => {
   const tabs = [
     { id: 'profile', name: 'Profile', icon: User },
     { id: 'rooms', name: 'Rooms', icon: Home },
-    { id: 'reports', name: 'Reports', icon: BarChart3 },
-    { id: 'analysis', name: 'Analysis', icon: TrendingUp },
     { id: 'favorites', name: 'Favorites', icon: Heart },
     { id: 'messages', name: 'Messages', icon: MessageCircle },
     { id: 'notifications', name: 'Notifications', icon: Bell },
     { id: 'users', name: 'Users', icon: Users },
     { id: 'bookings', name: 'Bookings', icon: DollarSign },
+    { id: 'reports', name: 'Reports', icon: BarChart3 },
+    { id: 'analysis', name: 'Analysis', icon: TrendingUp },
   ];
 
 

@@ -1,16 +1,51 @@
-import { Edit, Save, X, User } from "lucide-react";
-import { useState } from "react";
+import { Edit, Save, X, } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
+import { getUserProfileAPI } from "../../../api/profile/getUserProfileAPI";
+import Form from "form-data";
+import { updateUserProfileAPI } from "../../../api/profile/updateUserProfile";
+import { BASE_URL_LOCAL} from "../../../constants/constants";
 
 const ProfileTab = () => {
 
-    const { user, logout }: { user: any, logout: any } = useAuth();
+    const { user }: { user: any } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
-    const [editedAdmin, setEditedAdmin] = useState<any>(user || {});
+    const [profile, setProfile] = useState<any>(user?.profile || {});
+    const [status, setStatus] = useState('');
+    const [image, setImage] = useState({
+        filename: "" as string,
+        file: {} as any
+    });
 
-    const handleSaveProfile = () => {
-        setIsEditing(false);
+    const handleSaveProfile = async () => {
+        setStatus('Sending...')
+        const formData = new Form();
+        if (image.file && image.file.name) {
+            formData.append("image", image.file, image.file.name);
+        }
+        formData.append('name', profile.name);
+        // formData.append('email', profile.email);
+        formData.append('phone', profile.phone);
+        formData.append('address', profile.address);
+        formData.append('state', profile.state);
+        formData.append('country', profile.country);
+        formData.append('localGovt', profile.localGovt);
+        formData.append('dateOfBirth', profile.dateOfBirth);
+        // formData.append("_csrf", _csrf);
+        let update = await updateUserProfileAPI(user.userId, formData);
+        if (update !== null || undefined) {
+            setStatus("Updated");
+            setIsEditing(false);
+        }
+
     };
+
+    useEffect(() => {
+        (async () => {
+            const data = await getUserProfileAPI(user?.userId);
+            setProfile(data);
+        })();
+    }, [user.userId])
 
     return (<div className="max-w-2xl">
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -36,30 +71,51 @@ const ProfileTab = () => {
                         <button
                             onClick={() => {
                                 setIsEditing(false);
-                                setEditedAdmin(user || {});
+                                setProfile(profile || {});
                             }}
                             className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
                         >
                             <X className="h-4 w-4 mr-2" />
                             Cancel
                         </button>
+                        {status ? <div className='text-green-500'>{status}</div> : <div className='text-red-500'>{status}</div>}
                     </div>
                 )}
             </div>
 
             <div className="flex items-center mb-6">
                 <div className="w-20 h-20 bg-gradient-to-r from-red-600 to-orange-600 rounded-full flex items-center justify-center mr-6">
-                    <User className="h-10 w-10 text-white" />
+                    {/* <User className="h-10 w-10 text-white" /> */}
+                    <img crossOrigin="" src={BASE_URL_LOCAL+"/uploads/"+profile.image} alt={profile.image} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
                 </div>
                 <div>
-                    <h3 className="text-xl font-bold text-gray-900">{user?.fullName}</h3>
-                    <p className="text-gray-600 capitalize">{user?.role?.replace('-', ' ')}</p>
-                    <p className="text-sm text-gray-500">User since {new Date(user?.createdAt || '').toLocaleDateString()}</p>
+                    <h3 className="text-xl font-bold text-gray-900">{profile?.name}</h3>
+                    <p className="text-gray-600 capitalize">{profile?.role?.replace('-', ' ')}</p>
+                    <p className="text-sm text-gray-500">User since {new Date(profile?.createdAt || '').toLocaleDateString()}</p>
                 </div>
             </div>
 
             <form className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Upload a photo
+                        </label>
+
+                        {isEditing ? (
+
+                            <input
+                                type="file"
+                                onChange={(e: any) => setImage(prev => ({ ...prev, filename: e.target.files[0].name, file: e.target.files[0] }))}
+                                formEncType='multipart/form-data'
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        ) : (
+                            <p className="py-2 text-gray-900">{profile?.image || 'Not provided'}</p>
+                        )}
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Full Name
@@ -67,12 +123,12 @@ const ProfileTab = () => {
                         {isEditing ? (
                             <input
                                 type="text"
-                                value={editedAdmin.fullName || ''}
-                                onChange={(e) => setEditedAdmin({ ...editedAdmin, fullName: e.target.value })}
+                                defaultValue={profile?.name || ''}
+                                onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         ) : (
-                            <p className="py-2 text-gray-900">{user?.fullName || 'Not provided'}</p>
+                            <p className="py-2 text-gray-900">{profile?.name || 'Not provided'}</p>
                         )}
                     </div>
 
@@ -80,7 +136,17 @@ const ProfileTab = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Email Address
                         </label>
-                        <p className="py-2 text-gray-900">{user?.email}</p>
+                        {isEditing ? (
+                            <input
+                                disabled
+                                type="text"
+                                defaultValue={user.email || ''}
+                                onChange={(e) => setProfile({ ...profile, username: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        ) : (
+                            <p className="py-2 text-gray-900">{profile?.User?.username || 'Not provided'}</p>
+                        )}
                     </div>
 
                     <div>
@@ -90,12 +156,12 @@ const ProfileTab = () => {
                         {isEditing ? (
                             <input
                                 type="tel"
-                                value={editedAdmin.phone || ''}
-                                onChange={(e) => setEditedAdmin({ ...editedAdmin, phone: e.target.value })}
+                                defaultValue={profile?.phone || ''}
+                                onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         ) : (
-                            <p className="py-2 text-gray-900">{user?.phone || 'Not provided'}</p>
+                            <p className="py-2 text-gray-900">{profile?.phone || 'Not provided'}</p>
                         )}
                     </div>
 
@@ -106,19 +172,83 @@ const ProfileTab = () => {
                         <p className="py-2 text-gray-900 capitalize">{user?.role?.replace('-', ' ')}</p>
                     </div>
 
-                    <div className="md:col-span-2">
+                    <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Address
                         </label>
                         {isEditing ? (
                             <input
                                 type="text"
-                                value={editedAdmin?.address || ''}
-                                onChange={(e) => setEditedAdmin({ ...editedAdmin, address: e.target.value })}
+                                defaultValue={profile?.address || ''}
+                                onChange={(e) => setProfile({ ...profile, address: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         ) : (
-                            <p className="py-2 text-gray-900">{user?.address || 'Not provided'}</p>
+                            <p className="py-2 text-gray-900">{profile?.address || 'Not provided'}</p>
+                        )}
+                    </div>
+
+                    <div >
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Local Govt
+                        </label>
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                defaultValue={profile?.localGovt || ''}
+                                onChange={(e) => setProfile({ ...profile, localGovt: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        ) : (
+                            <p className="py-2 text-gray-900">{profile?.localGovt || 'Not provided'}</p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            State
+                        </label>
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                defaultValue={profile?.state || ''}
+                                onChange={(e) => setProfile({ ...profile, state: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        ) : (
+                            <p className="py-2 text-gray-900">{profile?.state || 'Not provided'}</p>
+                        )}
+                    </div>
+
+                    <div >
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Country
+                        </label>
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                defaultValue={profile?.country || ''}
+                                onChange={(e) => setProfile({ ...profile, country: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        ) : (
+                            <p className="py-2 text-gray-900">{profile?.country || 'Not provided'}</p>
+                        )}
+                    </div>
+
+                    <div >
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Date Of Birth
+                        </label>
+                        {isEditing ? (
+                            <input
+                                type="date"
+                                defaultValue={new Date(profile?.dateOfBirth || '').toLocaleDateString().split('/').reverse().join('-')}
+                                onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        ) : (
+                            <p className="py-2 text-gray-900">{new Date(profile?.dateOfBirth || 'Not provided').toLocaleDateString()}</p>
                         )}
                     </div>
                 </div>

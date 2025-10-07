@@ -3,14 +3,15 @@ import { Heart, Share2, MapPin, Users, Phone, CreditCard, Star } from 'lucide-re
 import { Room } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { BASE_URL_LOCAL } from '../../constants/constants';
+import { Link } from 'react-router-dom';
 
 interface RoomCardProps {
   room: Room;
-  onFavorite?: (roomId: string) => void;
+  onFavorite?: (roomId: string) => Promise<any>;
   onShare?: (room: Room) => void;
-  onContact?: (room: Room) => void;
-  onViewLocation?: (room: Room) => void;
-  onPayment?: (room: Room) => void;
+  onContact?: (phone: string) => string;
+  onViewLocation?: (location: string) => string;
+  onPayment?: (roomId: string, roomPrice: number) => Promise<void>;
   isFavorite?: boolean;
 }
 
@@ -23,8 +24,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
   onPayment,
   isFavorite = false
 }) => {
+
   const { user } = useAuth();
-  
+
   const photos = [
     'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg',
     'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg'
@@ -55,18 +57,24 @@ const RoomCard: React.FC<RoomCardProps> = ({
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Image Gallery */}
       <div className="relative h-48 overflow-hidden">
-        {room?.photos?.length ? (<img
-          src={BASE_URL_LOCAL + "/uploads/" + room?.photos[0]}
-          alt={room?.name}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-          crossOrigin='use-credentials'
-        />) : (
-          <img
-            src={photos[0]}
-            alt={room?.name}
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+        {room?.photos?.length ? (
+          <Link to={'/rooms/' + room.id}>
+            <img
+              src={BASE_URL_LOCAL + "/uploads/" + room?.photos[0]}
+              alt={room?.name}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              crossOrigin='use-credentials'
+            />
+          </Link>
+        ) : (
+          <Link to={'/rooms/' + room.id}>
+            <img
+              src={photos[0]}
+              alt={room?.name}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
             // crossOrigin='anonymous'
-          />
+            />
+          </Link>
         )
         }
         <div className="absolute top-4 left-4">
@@ -126,7 +134,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {room?.amenities.slice(0, 3).map((amenity,i) => (
+          {room?.amenities.slice(0, 3).map((amenity, i) => (
             <span
               key={i}
               className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
@@ -161,28 +169,29 @@ const RoomCard: React.FC<RoomCardProps> = ({
               className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
             >
               <Share2 className="h-4 w-4" />
-              <span className="text-sm">Share</span>
+              {/* <span className="text-sm">Share</span> */}
             </button>
             <button
-              onClick={() => onViewLocation?.(room)}
+              // onClick={() => onViewLocation?.(room.location)}
               className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
             >
-              <MapPin className="h-4 w-4" />
-              <span className="text-sm">Map</span>
+              <Link to={onViewLocation?.(room.location) as string}>
+                <MapPin className="h-4 w-4" />
+              </Link>
+              {/* <span className="text-sm">Map</span> */}
             </button>
           </div>
 
           <div className="flex space-x-1">
-            <button
-              onClick={() => onContact?.(room)}
-              className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
-            >
-              <Phone className="h-4 w-4" />
-              <span className="text-sm">Contact</span>
+            <button className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+              <Link to={"tel:" + onContact?.(room.agentPhone)}>
+                <Phone className="h-4 w-4" />
+                {/* <span className="text-sm">Contact</span> */}
+              </Link>
             </button>
-            {user && room?.availability === true && (
+            {user.userId && room?.availability !== true && (
               <button
-                onClick={() => onPayment?.(room)}
+                onClick={() => onPayment?.(room.id, room.price)}
                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 <CreditCard className="h-4 w-4" />

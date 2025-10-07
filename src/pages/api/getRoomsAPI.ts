@@ -2,10 +2,10 @@
 import { config } from "../../config/config";
 import { ResponseType } from "../../types";
 
-export const getRoomsAPI = async function getRoomsAPI() {
+export const getRoomsAPI = async function getRoomsAPI(page: number = 1) {
 
     try {
-        const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/rooms", {
+        const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/rooms?page=" + page, {
             method: "GET",
             credentials: 'include'
         });

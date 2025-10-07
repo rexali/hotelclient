@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// import { mockRooms } from '../data/mockData';
 import RoomDetailsCard from '../components/rooms/RoomDetailsCard';
-import { Room } from '../types';
+// import { Room } from '../types';
 import { getRoomAPI } from './api/getRoomAPI';
+import { ReviewList } from './components/ReviewList';
+import ReviewAdd from './components/ReviewAdd';
 
 const RoomDetails: React.FC = () => {
   // If using react-router-dom v6+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [data, setData] = useState<Room>();
-  const room = data;   //.find(r => r.id === id);
+  const [data, setData] = useState<any>({});
+  const room = data;
 
-   useEffect(()=>{
-     (async ()=>{
-      setData(await getRoomAPI(id as unknown as number));
-     })
-   },[])
+  useEffect(() => {
+    (async () => {
+      let room = await getRoomAPI(id as unknown as number);
+      console.log(room);
+
+      setData(room);
+    })();
+  }, [id])
 
   if (!room) {
     return (
@@ -35,6 +39,9 @@ const RoomDetails: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
       <RoomDetailsCard room={room} />
+      {room?.Reviews && <ReviewList reviews={[...room?.Reviews]} />}<br /><br />
+      {/* TO Do: Check if user signin and booked it */}
+      <ReviewAdd RoomId={room.id} />
     </div>
   );
 };

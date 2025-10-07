@@ -1,13 +1,30 @@
-import React, { useState,useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Grid, List } from 'lucide-react';
-import SearchFilters, { SearchFilters as SearchFiltersType } from '../components/common/SearchFilters';
+import SearchFilters from '../components/common/SearchFilters';
 import { Room } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { handleShare } from '../utils/handleShare';
 import RoomCard from '../components/rooms/RoomCard';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getSearchedRoomAPI } from './api/getSearchedRoomsAPI';
+import { makePaymentAPI } from '../payment/makePaymentAPI';
+import { addFavouriteRoomAPI } from './api/addFavouriteRoomAPI';
+import { toast } from 'sonner';
+import { handleViewLocation } from '../utils/handleViewLocation';
+import Pagination from '../components/common/Pagination';
 
+
+const initialFilter = {
+  location: '',
+  minPrice: 0,
+  maxPrice: 100000,
+  type: '',
+  roomType: '',
+  bedrooms: '',
+  bathrooms: '',
+  amenities: [],
+  availability: true
+}
 
 const Searchs: React.FC = () => {
   const { user } = useAuth();
@@ -15,71 +32,52 @@ const Searchs: React.FC = () => {
   const params = searchParams;
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const moutRef = useRef(true);
+  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filters, setFilters]=useState<any>(initialFilter);
 
   let newFilters = {
-    location: params.get("location"),
+    location: params.get("location") as string,
     minPrice: Number(params.get("minPrice") ?? 0),
     maxPrice: Number(params.get("maxPrice") ?? 100000),
-    roomType: params.get("roomType"),
-    type: params.get("type"),
+    roomType: params.get("roomType") as string,
+    type: params.get("type") as string,
     bedrooms: Number(params.get("bedrooms") ?? 0),
     bathrooms: Number(params.get("bathrooms") ?? 0),
-    amenities: params.get("amenities"),
-    availability: Boolean(params.get("availability")),
+    amenities: params.get("amenities") as unknown  as Array<string>,
+    availability: Boolean(params.get("availability")) ?? true,
   }
 
-  const initialFilter =
-  {
-    location: '',
-    minPrice: 0,
-    maxPrice: 100000,
-    roomType: '',
-    type: '',
-    bedrooms: '',
-    bathrooms: '',
-    amenities: [],
-    availability: true
-  }
-
-
-  const [filters, setFilters] = useState<SearchFiltersType>(newFilters as any ?? initialFilter);
 
   useEffect(() => {
-    if (moutRef.current) {
-      (async () => {
-        let data = await getSearchedRoomAPI({ page: 1, ...filters });
-        setRooms(data?.rooms);
-      })();
-    }
-    return () => {
-      moutRef.current = false
-    }
-  })
+    (async () => {
+      let data = await getSearchedRoomAPI({ page: currentPage, ...newFilters });
+      setRooms(data);
+    })();
 
+  }, [currentPage])
 
-  const handleFavorite = (roomId: string) => {
-    if (!user) {
+  const handleAddFavourite = async (roomId: any) => {
+    if (user.userId) {
+      let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+      if (result) {
+        toast(result)
+      }
       // Redirect to login or show login modal
-      return;
+    } else {
+      navigate("/auth")
     }
-    // Handle favorite logic
-    console.log('Toggle favorite for room:', roomId);
+
   };
 
-  const handleContact = (room: Room) => {
+  const handleContact = (phone: string) => {
     // Open contact modal or redirect to contact form
-    alert(`Contact ${room.agentName} at ${room.agentPhone}`);
+    return phone;
   };
 
-  const handleViewLocation = (room: Room) => {
-    // Open map modal or redirect to maps
-    alert(`View location: ${room.location}`);
-  };
-
-  const handlePayment = (room: Room) => {
+  const handlePayment = async (roomId: any, roomPrice: any) => {
     // Redirect to payment page or open payment modal
-    alert(`Booking ${room.name} for ${room.price}`);
+    await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
   };
 
   return (
@@ -96,7 +94,7 @@ const Searchs: React.FC = () => {
         </div>
 
         {/* Search Filters */}
-        <SearchFilters showAdvanced={false} />
+        <SearchFilters showAdvanced={false} newFilter={filters} />
 
         {/* Results Header */}
         <div className="flex justify-between items-center mb-6">
@@ -133,44 +131,50 @@ const Searchs: React.FC = () => {
 
         {/* Results */}
         {rooms?.length > 0 ? (
-          <div className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-              : 'space-y-6'
-          }>
-            {rooms.map((room) => (
-              <RoomCard
-                key={room.id}
-                room={room}
-                onFavorite={handleFavorite}
-                onShare={handleShare}
-                onContact={handleContact}
-                onViewLocation={handleViewLocation}
-                onPayment={handlePayment}
-                isFavorite={user?.favorites?.includes(room.id)}
-              />
-            ))}
+          <div>
+            <div className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+                : 'space-y-6'
+            }>
+              {rooms.map((room) => (
+                <RoomCard
+                  key={room.id}
+                  room={room}
+                  onFavorite={handleAddFavourite}
+                  onShare={handleShare}
+                  onContact={handleContact}
+                  onViewLocation={handleViewLocation}
+                  onPayment={handlePayment}
+                  isFavorite={user?.favorites?.includes(room.id)}
+                />
+              ))}
+            </div>
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="mb-4">
-              <Grid className="h-16 w-16 text-gray-300 mx-auto" />
+          <div>
+            <div className="text-center py-12">
+              <div className="mb-4">
+                <Grid className="h-16 w-16 text-gray-300 mx-auto" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No rooms found
+              </h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                Try adjusting your search filters or browse all available rooms.
+              </p>
+              <button
+                onClick={() => setFilters({ ...initialFilter})}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Clear Filters
+              </button>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No rooms found
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Try adjusting your search filters or browse all available rooms.
-            </p>
-            <button
-              onClick={() => setFilters({...initialFilter as any})}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-            >
-              Clear Filters
-            </button>
+
           </div>
         )}
       </div>
+      <Pagination currentPage={currentPage} totalPages={10} onPageChange={setCurrentPage} /><br />
     </div>
   );
 };
