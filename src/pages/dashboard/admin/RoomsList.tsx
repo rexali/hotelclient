@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Room } from '../../../types';
 import { Delete, Edit, View } from 'lucide-react';
 import RoomEdit from './RoomEdit';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { removeRoomAPI } from '../../../api/rooms/removeRoomAPI';
+import { toast } from 'sonner';
 
 
 
@@ -13,16 +14,9 @@ type RoomsTabProps = {
 
 export function RoomsList({ initialRooms = [] }: RoomsTabProps) {
 
-    const [rooms, setRooms] = useState<Room[]>(initialRooms);
+    const [rooms,] = useState<Room[]>(initialRooms);
     const [edit, setEdit] = useState(false);
     const [roomId, setRoomId] = useState<any>();
-    const navigate = useNavigate();
-
-
-    const handleRoomAdd = (room: Room) => {
-        setRooms(prev => [...prev, room]);
-        setEdit(false);
-    };
 
     const handleEditRoom = (roomId: string, edit: boolean) => {
         setRoomId(roomId);
@@ -31,12 +25,17 @@ export function RoomsList({ initialRooms = [] }: RoomsTabProps) {
 
     const handleRemoveRoom = async (id: string) => {
         if (window.confirm("Want to delete this room?")) {
-            await removeRoomAPI(id)
+            let result = await removeRoomAPI(id as unknown as number);
+            if (result) {
+                toast("Room removal success");
+            } else {
+                toast("Room removal failed");
+            }
         }
     }
 
     if (edit) {
-        return <RoomEdit handleRoomAdd={handleRoomAdd} roomId={roomId} />
+        return <RoomEdit roomId={roomId} setEdit={setEdit} />
     }
 
 
@@ -45,7 +44,7 @@ export function RoomsList({ initialRooms = [] }: RoomsTabProps) {
             <table className="w-full table-auto">
                 <thead>
                     <tr>
-                        <th className="text-left">Nome</th>
+                        <th className="text-left">Name</th>
                         <th className="text-left">Bedrooms</th>
                         <th className="text-left">Price</th>
                         <th className="text-left">Location</th>
@@ -60,9 +59,9 @@ export function RoomsList({ initialRooms = [] }: RoomsTabProps) {
                                 <td className="border px-4 py-2">{room.type}</td>
                                 <td className="border px-4 py-2">{room.price}</td>
                                 <td className="border px-4 py-2">{room.location}</td>
-                                <td className="border px-4 py-2"><View onClick={() => navigate("/rooms/" + room.id)} /></td>
-                                <td className="border px-4 py-2"><Edit onClick={() => handleEditRoom(room.id, true)} /></td>
-                                <td className="border px-4 py-2"><Delete onClick={() => handleRemoveRoom(room.id)} /></td>
+                                <td className="border px-4 py-2"><Link to={"/rooms/" + room.id} target='parent'><View /></Link></td>
+                                <td className="border px-4 py-2"><button onClick={() => handleEditRoom(room.id, true)}><Edit /></button></td>
+                                <td className="border px-4 py-2"><button onClick={() => handleRemoveRoom(room.id)}><Delete /></button></td>
                             </tr>
                         ))
                     }

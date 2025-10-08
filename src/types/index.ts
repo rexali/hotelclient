@@ -7,6 +7,24 @@ export interface ResponseType {
     message: string 
 }
 
+export interface Hostel {
+    id?: number,
+    name: string,
+    photo: string,
+    email: string,
+    phone: string,
+    address: string,
+    description: string,
+    localGovt: string,
+    state: string,
+    country: string,
+    document: string,
+    UserId: number,
+    featured:boolean
+    createdAt?: Date,
+    updatedAt?: Date
+}
+
 export interface Room {
   id: string;
   name: string;

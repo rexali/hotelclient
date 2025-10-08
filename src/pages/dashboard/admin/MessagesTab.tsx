@@ -1,10 +1,9 @@
 import { Edit, MessageCircle, Plus, Trash } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MessageAdd from "./MessageAdd";
 import { getMessagesAPI } from "./api/getMessagesAPI";
 import { getAllUsersAPI } from "./api/getAllUsersAPI";
 import MessageEdit from "./MessageEdit";
-import { removeNotificationAPI } from "./api/removeNotificationAPI";
 import Pagination from "../../../components/common/Pagination";
 import { removeMessageAPI } from "./api/removeMessageAPI";
 

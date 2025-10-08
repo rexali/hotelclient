@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ResponseType, Room } from '../../../types';
+import { ResponseType} from '../../../types';
 import { updateRoomAPI } from '../../../api/rooms/updateRoomAPI';
 import Form from "form-data";
 import { config } from '../../../config/config';
+import { Forward } from 'lucide-react';
+import { toast } from 'sonner';
 
 const roomTypes = ['single', 'double', 'triple', 'dormitory'];
 
-export default function RoomEdit({ handleRoomAdd, roomId }: { handleRoomAdd: (room: Room) => void, roomId: any }) {
+export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: any }) {
     const [room, setRoom] = useState<any>({});
     const [status, setStatus] = useState<string>();
     const [previewUrls, setPreviewUrls] = useState([]);
@@ -83,7 +85,10 @@ export default function RoomEdit({ handleRoomAdd, roomId }: { handleRoomAdd: (ro
 
         let update = await updateRoomAPI(roomId, formData);
         if (update) {
-            setStatus("Updated successful")
+            setStatus("Updated successful");
+            toast("Updated successful");
+        } else {
+            toast("Room Update failed");
         }
     };
 
@@ -123,7 +128,7 @@ export default function RoomEdit({ handleRoomAdd, roomId }: { handleRoomAdd: (ro
             onSubmit={handleUpdateSubmit}
             className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow space-y-6"
         >
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 text-center">Add a New Room</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 flex justify-between text-center">Edit Room <button onClick={() => setEdit(false)}><Forward /></button></h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Room Name</label>

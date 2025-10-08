@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Room } from '../../../types';
 import Form from "form-data";
 import { createRoomAPI } from '../../../api/rooms/createRoomAPI';
+import { Forward } from 'lucide-react';
+import { toast } from 'sonner';
 
 const initialRoom: Room = {
     id: '',
@@ -24,7 +26,7 @@ const initialRoom: Room = {
 
 const roomTypes = ['single', 'double', 'triple', 'dormitory'];
 
-export default function RoomAdd({ handleRoomAdd }: { handleRoomAdd: (room: Room) => void }) {
+export default function RoomAdd({hostelId, setAdd }: {hostelId?:number,setAdd:any}) {
     const [room, setRoom] = useState<Room>(initialRoom);
     const [status, setStatus] = useState<string>();
     const [previewUrls, setPreviewUrls] = useState([]);
@@ -92,16 +94,19 @@ export default function RoomAdd({ handleRoomAdd }: { handleRoomAdd: (room: Room)
         formData.append("agentPhone", room.agentPhone);
         formData.append('description', room.description);
         formData.append('price', room.price);
+        formData.append('HostelId', hostelId);
+
         // formData.append("_csrf", _csrf);
 
         let roomData = await createRoomAPI(formData);
 
         if (roomData !== null) {
             setStatus("Room created");
+            toast("Room created");
             setRoom(initialRoom);
-            handleRoomAdd({ ...roomData });
         } else {
             setStatus("Room creation failed")
+            toast("Room creation failed");
         }
     };
 
@@ -114,7 +119,7 @@ export default function RoomAdd({ handleRoomAdd }: { handleRoomAdd: (room: Room)
             onSubmit={handleSubmit}
             className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow space-y-6"
         >
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 text-center">Add a New Room</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 flex justify-between flex justify-between text-center">New Room <button onClick={() => setAdd(false)}><Forward /></button></h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Room Name</label>

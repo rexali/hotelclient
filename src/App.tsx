@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
 import { Toaster } from "sonner";
 
 // Pages
@@ -18,6 +16,10 @@ import { UserDashboard } from './pages/dashboard/user/UserDashboard';
 import { AdminDashboard } from './pages/dashboard/admin/AdminDashboard';
 import Searchs from './pages/Search';
 import Webhook from './pages/Webhook';
+import HostelDetails from './components/hostel/HostelDetails';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({
@@ -58,6 +60,7 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/rooms" element={<Rooms />} />
+          <Route path="/hostels/:id" element={<HostelDetails />} />
           <Route path="/search" element={<Searchs />} />
           <Route path="/rooms/:id" element={<RoomDetails />} />
           <Route path="/services" element={<Services />} />
@@ -96,7 +99,9 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
-        <AppContent />
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
       </Router>
     </AuthProvider>
   );

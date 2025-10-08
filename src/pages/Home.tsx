@@ -22,7 +22,7 @@ const Home: React.FC = () => {
   };
 
   const handleAddFavourite = async (roomId: any) => {
-    if (user.userId) {
+    if (user?.userId) {
       let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
       if (result) {
         toast(result)
@@ -30,7 +30,6 @@ const Home: React.FC = () => {
     } else {
       navigate("/auth")
     }
-
   };
   
 

@@ -18,10 +18,10 @@ export function RoomsTab({ initialRooms = [] }: RoomsTabProps) {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(0);
 
-    const handleAddRoom = (room: Room) => {
-        setRooms(prev => [...prev, room]);
-        setOpen(false);
-    };
+    // const handleAddRoom = (room: Room) => {
+    //     setRooms(prev => [...prev, {...room}]);
+    //     setOpen(false);
+    // };
 
     const data = useRooms(currentPage) as any;
 
@@ -33,8 +33,8 @@ export function RoomsTab({ initialRooms = [] }: RoomsTabProps) {
     if (open) {
         return (
             <div>
-                <h3>Add New Room</h3>
-                <RoomAdd handleRoomAdd={handleAddRoom} />
+                <h3>New Room</h3>
+                <RoomAdd setAdd={setOpen} />
             </div>
         )
     }

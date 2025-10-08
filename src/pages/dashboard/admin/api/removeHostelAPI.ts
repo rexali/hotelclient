@@ -1,9 +1,9 @@
-import { config } from "../../config/config";
-import { ResponseType } from "../../types";
+import { config } from "../../../../config/config";
+import { ResponseType } from "../../../../types";
 
-export const removeRoomAPI = async function removeRoomAPI(id: number) {
+export const removeHostelAPI = async function removeHostelAPI(id: number) {
     const _csrf = window.localStorage.getItem('csrf') as string;
-    const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/rooms/" + id, {
+    const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/hostels/" + id, {
         method: "DELETE",
         mode: "cors",
         credentials: 'include',

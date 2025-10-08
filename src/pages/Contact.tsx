@@ -112,7 +112,7 @@ const Contact: React.FC = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Send us a Message
               </h2>
-              
+
               {isSubmitted && (
                 <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center">
                   <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
@@ -327,17 +327,16 @@ const Contact: React.FC = () => {
           </div>
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="h-96 bg-gray-300 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">
-                  Interactive map would be integrated here
-                </p>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.9764542677494!2d8.542524274532385!3d11.976131035921783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x11ae8132a0dd23b3%3A0x1d15892c04225543!2sAlmubarak%20Waqf%20Foundation!5e0!3m2!1sen!2sng!4v1759930542722!5m2!1sen!2sng" width="100%" height="450" style={{ border: 0 }} allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+            </div><br/><br/>
+            <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-900">Our Office Location</h3>
                 <p className="text-sm text-gray-500 mt-2">
                   123 University Road, Victoria Island, Lagos, Nigeria
                 </p>
               </div>
-            </div>
           </div>
+
         </div>
       </section>
     </div>

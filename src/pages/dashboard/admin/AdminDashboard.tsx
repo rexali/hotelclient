@@ -1,4 +1,4 @@
-import { BarChart3, Bell, Heart, Home, MessageCircle, TrendingUp, User, Users, DollarSign } from "lucide-react";
+import { BarChart3, Bell, Heart, Home, MessageCircle, TrendingUp, User, Users, DollarSign, Hotel } from "lucide-react";
 import { useState } from "react";
 import ProfileTab from "./ProfileTab";
 import { UsersTab } from "./UsersTab";
@@ -9,6 +9,7 @@ import { NotificationsTab } from "./NotificatonsTab";
 import { BookingsTab } from "./BookingsTabs";
 import SavedTab from "./SavedTabs";
 import { RoomsTab } from "./RoomsTab";
+import { HostelsTab } from "./HostelsTab";
 
 
 export const AdminDashboard = () => {
@@ -23,6 +24,7 @@ export const AdminDashboard = () => {
     { id: 'notifications', name: 'Notifications', icon: Bell },
     { id: 'users', name: 'Users', icon: Users },
     { id: 'bookings', name: 'Bookings', icon: DollarSign },
+    { id: 'hostels', name: 'Hostels', icon: Hotel },
     { id: 'reports', name: 'Reports', icon: BarChart3 },
     { id: 'analysis', name: 'Analysis', icon: TrendingUp },
   ];
@@ -32,8 +34,9 @@ export const AdminDashboard = () => {
     switch (activeTab) {
       case 'profile':
         return <ProfileTab />
+      case 'hostels':
+        return <HostelsTab />
       case 'rooms':
-        // return <Rooms />
         return <RoomsTab />
       case 'bookings':
         return <BookingsTab />
