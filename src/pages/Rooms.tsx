@@ -12,6 +12,7 @@ import { addFavouriteRoomAPI } from './api/addFavouriteRoomAPI';
 import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { handleViewLocation } from '../utils/handleViewLocation';
 import Pagination from '../components/common/Pagination';
+import { handleContact } from '../utils/handlePhoneCall';
 
 
 const initialFilter = {
@@ -61,11 +62,6 @@ const Rooms: React.FC = () => {
       navigate("/auth")
     }
 
-  };
-
-  const handleContact = (phone: string) => {
-    // Open contact modal or redirect to contact form
-    return phone;
   };
 
   const handlePayment = async (roomId: any, roomPrice: any) => {

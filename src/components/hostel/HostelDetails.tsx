@@ -3,18 +3,41 @@ import { getHostelAPI } from "../../pages/dashboard/admin/api/getHostelAPI";
 import { useParams } from "react-router-dom";
 import RoomCard from "../rooms/RoomCard";
 import { Grid, List } from "lucide-react";
-
+import { toast } from "sonner";
+import { addFavouriteRoomAPI } from "../../pages/api/addFavouriteRoomAPI";
+import { makePaymentAPI } from "../../payment/makePaymentAPI";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { handleViewLocation } from "../../utils/handleViewLocation";
+import { handleShare } from "../../utils/handleShare";
+import { handleContact } from "../../utils/handlePhoneCall";
 
 const HostelDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [hostel, setHostel] = useState<any>({});
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const handlePayment = async (roomId: any, roomPrice: any) => {
+        await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user?.email });
+    };
+
+    const handleAddFavourite = async (roomId: any) => {
+        if (user?.userId) {
+            let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+            if (result) {
+                toast(result)
+            }
+        } else {
+            navigate("/auth")
+        }
+    };
 
     useEffect(() => {
         (async () => {
             let { hostel } = await getHostelAPI(id as unknown as number);
             console.log(hostel);
-
             setHostel(hostel);
         })();
     }, [id]);
@@ -37,24 +60,6 @@ const HostelDetails: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </section>
-    );
-
-
-
-    // Rooms Section
-    const Rooms = () => (
-        <section className="max-w-5xl mx-auto py-8 px-4">
-            <h2 className="text-2xl font-bold mb-4 text-blue-700">Rooms</h2>
-            {hostel?.Rooms && hostel?.Rooms.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {hostel?.Rooms.map((room: any) => (
-                        <RoomCard key={room.id} room={room} />
-                    ))}
-                </div>
-            ) : (
-                <div className="text-gray-500">No rooms found for this hostel?.</div>
-            )}
         </section>
     );
 
@@ -86,28 +91,36 @@ const HostelDetails: React.FC = () => {
 
             {/* Results */}
 
-            { hostel.Rooms?.length > 0 ? (
-                    <div>
-                        <div className={
-                            viewMode === 'grid'
-                                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-                                : 'space-y-6'
-                        }>
+            {hostel.Rooms?.length > 0 ? (
+                <div>
+                    <div className={
+                        viewMode === 'grid'
+                            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+                            : 'space-y-6'
+                    }>
                         {hostel?.Rooms.map((room: any) => (
-                                <RoomCard key={room.id} room={room} />
-                            ))}
-                        </div>
+                            <RoomCard
+                                key={room.id}
+                                room={room}
+                                onPayment={handlePayment}
+                                onFavorite={handleAddFavourite}
+                                onViewLocation={handleViewLocation}
+                                onShare={handleShare}
+                                onContact={handleContact}
+                            />
+                        ))}
                     </div>
-                ) : (
-                    <div className="text-center py-12">
-                        <div className="mb-4">
-                            <Grid className="h-16 w-16 text-gray-300 mx-auto" />
-                        </div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                            No rooms found
-                        </h3>
+                </div>
+            ) : (
+                <div className="text-center py-12">
+                    <div className="mb-4">
+                        <Grid className="h-16 w-16 text-gray-300 mx-auto" />
                     </div>
-                )
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                        No rooms found
+                    </h3>
+                </div>
+            )
             }
         </div>)
 }
