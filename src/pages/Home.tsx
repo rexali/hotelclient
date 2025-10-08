@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
+import { mockRooms } from '../data/mockData';
 
 const Home: React.FC = () => {
   const { user } = useAuth()
@@ -31,7 +32,7 @@ const Home: React.FC = () => {
       navigate("/auth")
     }
   };
-  
+
 
   useEffect(() => {
     if (moutRef.current) {

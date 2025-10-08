@@ -17,9 +17,9 @@ import { AdminDashboard } from './pages/dashboard/admin/AdminDashboard';
 import Searchs from './pages/Search';
 import Webhook from './pages/Webhook';
 import HostelDetails from './components/hostel/HostelDetails';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({

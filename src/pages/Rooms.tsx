@@ -36,6 +36,7 @@ const Rooms: React.FC = () => {
   const recommended = Boolean(searchParams.get('recommended'));
   const recent = Boolean(searchParams.get('recent'));
   const booked = Boolean(searchParams.get('booked'));
+  const type = searchParams.get('type');
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -89,7 +90,7 @@ const Rooms: React.FC = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              {rooms?.length} rooms found
+              {!type ? rooms?.length : rooms.filter(r => r.type === type).length} rooms found
             </h2>
             <p className="text-sm text-gray-600">
               Showing results based on your search criteria
@@ -188,7 +189,7 @@ const Rooms: React.FC = () => {
                             isFavorite={user?.favorites?.includes(room.id)}
                           />
                         ))
-                          : rooms.map((room) => (
+                          : type ? rooms?.filter(rm => rm.type === type)?.map((room) => (
                             <RoomCard
                               key={room.name}
                               room={room}
@@ -199,7 +200,17 @@ const Rooms: React.FC = () => {
                               onPayment={handlePayment}
                               isFavorite={user?.favorites?.includes(room.id)}
                             />
-                          ))
+                          )) : rooms.map((room) => (
+                            <RoomCard
+                              key={room.name}
+                              room={room}
+                              onFavorite={handleAddFavourite}
+                              onShare={handleShare}
+                              onContact={handleContact}
+                              onViewLocation={handleViewLocation}
+                              onPayment={handlePayment}
+                              isFavorite={user?.favorites?.includes(room.id)}
+                            />))
               }
 
             </div>
@@ -241,6 +252,6 @@ const Rooms: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};
 
 export default Rooms;

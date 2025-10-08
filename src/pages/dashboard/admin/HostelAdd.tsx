@@ -3,6 +3,7 @@ import { Hostel } from '../../../types';
 import Form from "form-data";
 import { addHostelAPI } from './api/addHostelAPI';
 import { Forward } from 'lucide-react';
+import { toast } from 'sonner';
 
 const initialHostel: Hostel = {
     id: 1,
@@ -62,11 +63,13 @@ export default function HostelAdd({ handleAddHostel, setOpenHostel }: { setOpenH
 
         if (hostelData !== null) {
             setStatus("Hostel created");
+            toast("Hostel created")
             setHostel(initialHostel);
             handleAddHostel({ ...hostelData });
             setOpenHostel(false)
         } else {
-            setStatus("Hostel creation failed")
+            toast("Hostel creation failed");
+            setStatus("Hostel creation failed");
         }
     };
 

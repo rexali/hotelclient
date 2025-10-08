@@ -1,8 +1,7 @@
 import * as React from "react";
 
-
 type Props = { children: React.ReactNode };
-type State = { hasError: boolean, error: Error, reset: () => void }
+type State = { hasError: boolean, error: Error, reset: ()=>void }
 
 export default class ErrorBoundary extends React.Component<Props, State> {
     constructor(props: any) {
@@ -10,13 +9,18 @@ export default class ErrorBoundary extends React.Component<Props, State> {
         this.state = {
             hasError: false,
             error: new Error(),
-            reset: () => { }
+            reset:()=>{}
         }
     }
 
-    static getDerivedStateFromError(error: any) {
 
+    static getDerivedStateFromError(error: any) {
+        
         return { hasError: true, error }
+    }
+
+    handleReload = ()=>{
+        window.location.reload();
     }
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
@@ -38,7 +42,7 @@ export default class ErrorBoundary extends React.Component<Props, State> {
                         <p><span>Name: </span>  {this.state.error.name}</p><br />
                         <p><span>Message: </span>  {this.state.error.message}</p><br />
                         <button
-                            onClick={() => this.state.reset()}
+                            onClick={() => this.handleReload()}
                             style={{backgroundColor:"green",color:"white",padding:4, borderRadius:4}}
                         >
                             Try again

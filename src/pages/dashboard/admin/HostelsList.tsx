@@ -26,11 +26,6 @@ export function HostelsList({ initialHostels = [] }: HostelsTabProps) {
         setAdd(false);
     };
 
-    const handleAddRoom = (room: any) => {
-        setHostels(prev => [...prev, {...room}]);
-        setOpenRoom(false);
-    };
-
     const handleEditHostel = (hostelId: number | undefined, edit: boolean) => {
         setHostelId(hostelId);
         setEdit(edit)
@@ -57,7 +52,7 @@ export function HostelsList({ initialHostels = [] }: HostelsTabProps) {
     }
 
     if (openRoom) {
-        return <RoomAdd handleRoomAdd={handleAddRoom} hostelId={hostelId} setAdd={setOpenRoom} />
+        return <RoomAdd hostelId={hostelId} setAdd={setOpenRoom} />
     }
 
      if (add) {

@@ -11,12 +11,22 @@ export function HostelsTab() {
     const [open, setOpen] = useState<Boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(0);
+    const [key, setKey] = useState(0);
 
-    const handleAddRoom = (room: Hostel) => {
-        setHostels((prev: any) => [...prev, room]);
+    const handleSetKey = () => {
+        setKey(prev => prev + 1);
+    }
+    
+    const handleAddHostel = (room: Hostel) => {
+        setHostels((prev: any) => [...prev, {...room}]);
         setOpen(false);
     };
 
+
+    const handleSetOpen=(val:boolean)=>{
+          setOpen(val);
+          handleSetKey();
+    }
 
     useEffect(() => {
         (async () => {
@@ -24,21 +34,21 @@ export function HostelsTab() {
             setTotalPages(data?.roomCount ?? 2);
             setHostels(data?.hostels)
         })()
-    }, [currentPage])
+    }, [currentPage,key])
 
     if (open) {
         return (
             <div>
-                <h3>Add New Hostel</h3>
-                <HostelAdd handleAddHostel={handleAddRoom} setOpenHostel={setOpen} />
+                <h3>New Hostel</h3>
+                <HostelAdd handleAddHostel={handleAddHostel} setOpenHostel={handleSetOpen} />
             </div>
         )
     }
 
     return (
-        <div>
+        <div key={key}>
             <h2 className='flex justify-between'>Hostels<span onClick={() => setOpen(true)}><PlusCircle /></span></h2>
-            {hostels?.length > 0 && <HostelsList initialHostels={[...hostels]} />}
+            {hostels?.length > 0 && <HostelsList  initialHostels={[...hostels]} />}
             <div>
                 <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} /><br />
             </div>
