@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
-import { mockRooms } from '../data/mockData';
+import { getCSRFTokenAPI } from '../api/getCSRFTokenAPI';
 
 const Home: React.FC = () => {
   const { user } = useAuth()
@@ -33,12 +33,18 @@ const Home: React.FC = () => {
     }
   };
 
-
   useEffect(() => {
     if (moutRef.current) {
       (async () => {
-        let data = await getRoomsAPI();
-        setData(data);
+        // get token and store in local storage
+        try {
+          await getCSRFTokenAPI();
+        let data = await getRoomsAPI(); 
+         setData(data);
+        } catch (error) {
+          console.warn(error);
+        }
+        
       })();
     }
     return () => {

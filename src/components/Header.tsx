@@ -54,7 +54,7 @@ const Header: React.FC = () => {
 
           {/* User Menu */}
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (
+            {user?.userId ? (
               <div className="flex items-center space-x-4">
                 <Link
                   to={user.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'}

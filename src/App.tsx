@@ -40,18 +40,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user
 };
 
 const AppContent: React.FC = () => {
-  const mountRef = useRef(true);
-  const { getCSRFToken } = useAuth();
-
-  useEffect(() => {
-    if (mountRef.current) {
-      getCSRFToken();
-    }
-
-    return () => {
-      mountRef.current = false
-    }
-  })
 
   return (
     <div className="min-h-screen flex flex-col">
