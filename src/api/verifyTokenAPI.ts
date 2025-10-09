@@ -6,15 +6,15 @@ interface ResponseType {
     message: string
 }
 
-export const verifyTokenAPI = async function verifyToken() {
+export const verifyTokenAPI = async function verifyToken(token: string) {
 
     try {
-        const token = window.localStorage.getItem('token');
+        const token2 = window.localStorage.getItem('token') as string;
         if (token) {
             const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/auth/verify-token", {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token
+                    "Authorization": "Bearer " + token || token2
                 },
                 credentials: 'include'
             });

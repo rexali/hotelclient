@@ -7,7 +7,6 @@ interface ResponseType {
 }
 export const loginAPI = async function loginAPI(data: { password: string, username: string }) {
     const _csrf = window.localStorage.getItem('csrf') as any;
-    
     const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/auth/login/local", {
         method: "post",
         body: JSON.stringify({ ...data, _csrf }),
@@ -20,10 +19,10 @@ export const loginAPI = async function loginAPI(data: { password: string, userna
     });
     const result = await response.json() as ResponseType;
     if (result.status === 'success') {
-        window.localStorage.setItem('token', result.data.token);
+        window.localStorage.setItem('token', result?.data?.token);
 
-        return true;
+        return result?.data?.token;
     }
 
-    return false
+    return;
 }

@@ -2,27 +2,27 @@ import { Dispatch } from "react";
 
 
 export interface ResponseType {
-    status: string;
-    data: any
-    message: string 
+  status: string;
+  data: any
+  message: string
 }
 
 export interface Hostel {
-    id?: number,
-    name: string,
-    photo: string,
-    email: string,
-    phone: string,
-    address: string,
-    description: string,
-    localGovt: string,
-    state: string,
-    country: string,
-    document: string,
-    UserId: number,
-    featured:boolean
-    createdAt?: Date,
-    updatedAt?: Date
+  id?: number,
+  name: string,
+  photo: string,
+  email: string,
+  phone: string,
+  address: string,
+  description: string,
+  localGovt: string,
+  state: string,
+  country: string,
+  document: string,
+  UserId: number,
+  featured: boolean
+  createdAt?: Date,
+  updatedAt?: Date
 }
 
 export interface Room {
@@ -93,10 +93,10 @@ export interface Notification {
 
 export interface AuthContextType {
   user: any | null;
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (username: string, password: string) => Promise<any>;
   register: (userData: any) => Promise<boolean>;
   logout: () => void;
-  verifyToken: () => any;
+  verifyToken: (token: string) => any;
   setUser: Dispatch<any>;
   updateProfile: (userData: any) => void;
   getCSRFToken: () => void

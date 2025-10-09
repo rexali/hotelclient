@@ -34,9 +34,9 @@ const Auth: React.FC = () => {
 
     try {
       if (isLogin) {
-        const success = await login(formData.username, formData.password);
-        if (success) {
-          const user = await verifyToken();
+        const token = await login(formData.username, formData.password);
+        if (token) {
+          const user = await verifyToken(token);
           setUser(user)
           if (user) {
             window.localStorage.setItem('currentUser', JSON.stringify(user))

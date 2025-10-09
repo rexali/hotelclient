@@ -19,28 +19,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
 
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string): Promise<string | undefined> => {
 
     try {
 
       const result = await loginAPI({username , password });
 
      
-      return result;
+      return result as string;
 
     } catch (error) {
 
       console.warn(error);
-      return false
+      return;
     }
 
   }
 
-  const verifyToken = async (): Promise<boolean> => {
+  const verifyToken = async (token:string): Promise<any> => {
 
     try {
 
-      const result = await verifyTokenAPI();
+      const result = await verifyTokenAPI(token);
       window.localStorage.setItem("userId",result.data?.userId);
       window.localStorage.setItem("userId",result.data?.role);
       window.localStorage.setItem("userId",result.data?.email);
@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
 
       console.warn(error);
-      return false
+      return;
     }
 
   }
