@@ -12,7 +12,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<any | null>({});
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('currentUser');
+    const savedUser = window.localStorage.getItem('currentUser');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
@@ -23,10 +23,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
 
-      const result = await loginAPI({username , password });
+      const token = await loginAPI({username , password });
 
      
-      return result as string;
+      return token as string;
 
     } catch (error) {
 
@@ -42,11 +42,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const result = await verifyTokenAPI(token);
       window.localStorage.setItem("userId",result.data?.userId);
-      window.localStorage.setItem("userId",result.data?.role);
-      window.localStorage.setItem("userId",result.data?.email);
-      window.localStorage.setItem("userId",JSON.stringify(result.data?.profile));
+      window.localStorage.setItem("role",result.data?.role);
+      window.localStorage.setItem("email",result.data?.email);
+      window.localStorage.setItem("profile",JSON.stringify(result.data?.profile));
 
-      return result;
+      return result.data;
 
     } catch (error) {
 
@@ -75,14 +75,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('currentUser');
+    window.localStorage.removeItem('currentUser');
   };
 
   const updateProfile = (userData: Partial<User>) => {
     if (user) {
       const updatedUser = { ...user, ...userData };
       setUser(updatedUser);
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      window.localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     }
   };
 

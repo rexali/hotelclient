@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff, Building } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'sonner';
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -31,21 +32,22 @@ const Auth: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
       if (isLogin) {
         const token = await login(formData.username, formData.password);
         if (token) {
           const user = await verifyToken(token);
-          setUser(user)
+          setUser(user);
           if (user) {
             window.localStorage.setItem('currentUser', JSON.stringify(user))
             navigate('/user-dashboard');
           } else {
-            alert('Invalid verification credentials');
+            // alert('Invalid verification credentials');
+            toast("Invalid verification credentials.")
           }
         } else {
-          alert('Invalid login credentials.');
+          // alert('Invalid login credentials.');
+          toast("Invalid login credentials.")
         }
 
       } else {

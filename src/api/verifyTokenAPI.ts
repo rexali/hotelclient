@@ -10,7 +10,7 @@ export const verifyTokenAPI = async function verifyToken(token: string) {
 
     try {
         const token2 = window.localStorage.getItem('token') as string;
-        if (token) {
+        if (token || token2) {
             const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/auth/verify-token", {
                 headers: {
                     "Content-Type": "application/json",
@@ -26,7 +26,6 @@ export const verifyTokenAPI = async function verifyToken(token: string) {
         }
     } catch (error) {
         console.warn(error);
-
     }
 }
 

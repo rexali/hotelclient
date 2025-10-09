@@ -96,8 +96,8 @@ export interface AuthContextType {
   login: (username: string, password: string) => Promise<any>;
   register: (userData: any) => Promise<boolean>;
   logout: () => void;
-  verifyToken: (token: string) => any;
+  verifyToken: (token: string) => Promise<any>;
   setUser: Dispatch<any>;
   updateProfile: (userData: any) => void;
-  getCSRFToken: () => void
+  getCSRFToken: () => Promise<any>
 }
