@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ResponseType} from '../../../types';
+import { ResponseType } from '../../../types';
 import { updateRoomAPI } from '../../../api/rooms/updateRoomAPI';
 import Form from "form-data";
 import { config } from '../../../config/config';
@@ -111,7 +111,7 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
         }
 
         getRoomAPI(roomId);
-        createPreviewUrls(images.files)
+        createPreviewUrls(room?.photos ?? images.files)
 
     }, [images, roomId])
 
@@ -269,7 +269,6 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
                 <input
                     name="images"
                     type='file'
-                    // defaultValue={room.images.join(', ')}
                     onChange={handleImagesChange}
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     formEncType='multipart/form-data'

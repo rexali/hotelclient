@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Hostel } from '../../../types';
 import Form from "form-data";
 import { updateHostelAPI } from './api/updateHostelAPI';
 import { Forward } from 'lucide-react';
 import { getHostelAPI } from './api/getHostelAPI';
+import { BASE_URL_LOCAL } from '../../../constants/constants';
 
 const initialHostel: Hostel = {
     id: 1,
@@ -24,6 +25,7 @@ const initialHostel: Hostel = {
 export default function HostelEdit({ hostelId, setEdit }: { hostelId: number, setEdit: any },) {
     const [hostel, setHostel] = useState<Hostel>(initialHostel);
     const [status, setStatus] = useState("");
+    const [previewUrl, setPreviewUrl] = useState({});
     const [image, setImage] = useState<any>({
         filenames: "" as string,
         photo: {} as any,
@@ -188,6 +190,7 @@ export default function HostelEdit({ hostelId, setEdit }: { hostelId: number, se
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
+                    {hostel?.photo && <img src={BASE_URL_LOCAL + "/uploads/" + hostel?.photo} alt={hostel?.name} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />}
                     <input
                         name="photo"
                         type='file'
@@ -199,6 +202,7 @@ export default function HostelEdit({ hostelId, setEdit }: { hostelId: number, se
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Document (C.A.C)</label>
+                    {hostel?.document && <img src={BASE_URL_LOCAL + "/uploads/" + hostel?.document} alt={hostel?.name} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />}
                     <input
                         name="document"
                         type='file'
