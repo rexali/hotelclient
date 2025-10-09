@@ -7,11 +7,6 @@ import MessageEdit from "./MessageEdit";
 import Pagination from "../../../components/common/Pagination";
 import { removeMessageAPI } from "./api/removeMessageAPI";
 
-var users: any;
-(async () => {
-  let result = await getAllUsersAPI();
-  users = result.users;
-})()
 
 export const MessagesTab = () => {
   const [openAdd, setOpenAdd] = useState(false);
@@ -20,13 +15,16 @@ export const MessagesTab = () => {
   const [messageId, setMessageId] = useState<any>();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [users, setUsers] = useState<any>([]);
 
 
   useEffect(() => {
 
     (async () => {
+      let result = await getAllUsersAPI();
+      setUsers(result.users);
       const { messages } = await getMessagesAPI(currentPage);
-      setTotalPages(messages?.messageCount); 
+      setTotalPages(messages?.messageCount);
       setMessages(messages?.messages);
     })();
   }, [currentPage]);

@@ -12,6 +12,16 @@ import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
 import { getCSRFTokenAPI } from '../api/getCSRFTokenAPI';
 
+
+(async () => {
+  // get token and store in local storage
+  try {
+    await getCSRFTokenAPI();
+  } catch (error) {
+    console.warn(error);
+  }
+})();
+
 const Home: React.FC = () => {
   const { user } = useAuth()
   const moutRef = useRef(true);
@@ -38,13 +48,12 @@ const Home: React.FC = () => {
       (async () => {
         // get token and store in local storage
         try {
-          await getCSRFTokenAPI();
-        let data = await getRoomsAPI(); 
-         setData(data);
+          let data = await getRoomsAPI();
+          setData(data);
         } catch (error) {
           console.warn(error);
         }
-        
+
       })();
     }
     return () => {

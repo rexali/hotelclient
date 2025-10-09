@@ -2,7 +2,7 @@ import { config } from "../config/config"
 
 interface ResponseType {
     status: string;
-    data: { result: boolean, user: any }
+    data: { user: any }
     message: string
 }
 
@@ -16,25 +16,24 @@ interface RegisterationType {
     state: string,
     role: string,
     status: string,
+    _csrf?: string
 }
 
 export const registerAPI = async function registerAPI(data: RegisterationType) {
-    const _csrf = window.localStorage.getItem('csrf') as string;
-    console.log(_csrf);
-    
+    const _csrf = window.localStorage.getItem('csrf') as string;    
     const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/auth/register", {
-        method: "post",
-        body: JSON.stringify({ ...data, _csrf: _csrf }),
+        method: "POST",
+        body: JSON.stringify({ ...data, _csrf }),
         credentials: 'include',
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-Token": _csrf
+            "CSRF-Token": _csrf
         },
     });
     const result = await response.json() as ResponseType;
 
-    if (result.data) {
-        window.localStorage.setItem('token', result.data.user.token);
+    if (result.status ==="success") {
+
         return true;
     }
 
