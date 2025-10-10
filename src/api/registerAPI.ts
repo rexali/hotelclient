@@ -16,11 +16,12 @@ interface RegisterationType {
     state: string,
     role: string,
     status: string,
+    permission: Array<string>
     _csrf?: string
 }
 
 export const registerAPI = async function registerAPI(data: RegisterationType) {
-    const _csrf = window.localStorage.getItem('csrf') as string;    
+    const _csrf = window.localStorage.getItem('csrf') as string;
     const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/auth/register", {
         method: "POST",
         body: JSON.stringify({ ...data, _csrf }),
@@ -32,7 +33,7 @@ export const registerAPI = async function registerAPI(data: RegisterationType) {
     });
     const result = await response.json() as ResponseType;
 
-    if (result.status ==="success") {
+    if (result.status === "success") {
 
         return true;
     }

@@ -9,7 +9,12 @@ const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, register, verifyToken, setUser } = useAuth();
+  const {
+    login,
+    register,
+    // verifyToken, 
+    setUser
+  } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -70,6 +75,8 @@ const Auth: React.FC = () => {
           state: formData.state,
           country: formData.country,
           role: 'user',
+          status: "no",
+          permission: ["read", "write"]
         });
         if (success === true) {
 

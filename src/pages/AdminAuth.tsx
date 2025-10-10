@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Building, Mail, Lock, Eye, EyeOff, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { verifyTokenAPI } from '../api/verifyTokenAPI';
+import { toast } from 'sonner';
 
 const AdminAuth: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, verifyToken, setUser } = useAuth();
+  const { 
+    login, 
+    // verifyToken, 
+    setUser 
+  } = useAuth();
 
   const navigate = useNavigate();
 
@@ -30,16 +36,20 @@ const AdminAuth: React.FC = () => {
 
       const success = await login(formData.username, formData.password);
       if (success) {
-        const user = await verifyToken();
+        // const user = await verifyToken(success);
+        const user = await verifyTokenAPI(success);
         setUser(user)
         if (user) {
           window.localStorage.setItem('currentUser', JSON.stringify(user))
           navigate('/admin-dashboard');
         } else {
-          alert('Invalid verification credentials');
+          // alert('Invalid verification credentials');
+          toast("Invalid verification credentials.");
         }
       } else {
-        alert('Invalid login credentials.');
+        // alert('Invalid login credentials.');
+         toast("Invalid login credentials.");
+        
       }
     } catch (error) {
       console.error('Auth error:', error);
