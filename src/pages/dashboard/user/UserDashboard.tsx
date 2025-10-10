@@ -5,10 +5,12 @@ import { NotificationsTab } from "./NotificatonsTab";
 import { MessagesTab } from "./MessagesTab";
 import { BookingsTab } from "./BookingsTabs";
 import FavouritesTab from "./FavouritesTab";
+import { useAuth } from "../../../context/AuthContext";
 
 export const UserDashboard = () => {
   
   const [activeTab, setActiveTab] = useState('profile');
+  const {user} = useAuth();
   
   const tabs = [
     { id: 'profile', name: 'Profile', icon: User },
@@ -48,7 +50,7 @@ export const UserDashboard = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">User Dashboard</h1>
-                <p className="text-gray-600">Welcome back, {"Aliyu"}</p>
+                <p className="text-gray-600">Welcome back, {user?.profile?.name}</p>
               </div>
             </div>
           </div>

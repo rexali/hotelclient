@@ -10,10 +10,10 @@ import { BookingsTab } from "./BookingsTabs";
 import SavedTab from "./SavedTabs";
 import { RoomsTab } from "./RoomsTab";
 import { HostelsTab } from "./HostelsTab";
-
+import { useAuth } from "../../../context/AuthContext";
 
 export const AdminDashboard = () => {
-
+  const {user} = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
 
   const tabs = [
@@ -69,7 +69,7 @@ export const AdminDashboard = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p className="text-gray-600">Welcome back, {"Aliyu"}</p>
+                <p className="text-gray-600">Welcome back, {user?.profile?.name}</p>
               </div>
             </div>
           </div>
