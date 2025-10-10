@@ -20,9 +20,10 @@ export const verifyTokenAPI = async function verifyToken(token: string) {
             });
             const result = await response.json() as ResponseType;
             if (result.status === 'success') {
-
                 return result.data;
             }
+
+            return;
         }
     } catch (error) {
         console.warn(error);

@@ -2,7 +2,7 @@ import { config } from "../config/config"
 
 interface ResponseType {
     status: string;
-    data: { token: string }
+    data: { user: any }
     message: string
 }
 export const loginAPI = async function loginAPI(data: { password: string, username: string }) {
@@ -19,9 +19,9 @@ export const loginAPI = async function loginAPI(data: { password: string, userna
     });
     const result = await response.json() as ResponseType;
     if (result.status === 'success') {
-        window.localStorage.setItem('token', result?.data?.token);
+        window.localStorage.setItem('token', result?.data?.user?.token);
 
-        return result?.data?.token;
+        return result?.data?.user?.token;
     }
 
     return;

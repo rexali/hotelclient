@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff, Building } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
+import { verifyTokenAPI } from '../api/verifyTokenAPI';
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -35,11 +36,19 @@ const Auth: React.FC = () => {
     try {
       if (isLogin) {
         const token = await login(formData.username, formData.password);
+        console.log(token);
         if (token) {
-          const user = await verifyToken(token);
-          setUser(user);
+          toast("User authenticated. Wailting for verification...");
+          // const user = await verifyToken(token);
+          const user = await verifyTokenAPI(token);
+
+          console.log(user);
+
           if (user) {
-            window.localStorage.setItem('currentUser', JSON.stringify(user))
+            setUser(user);
+            window.localStorage.setItem('currentUser', JSON.stringify(user));
+            toast("User verified successfully.");
+
             navigate('/user-dashboard');
           } else {
             // alert('Invalid verification credentials');
@@ -63,11 +72,14 @@ const Auth: React.FC = () => {
           role: 'user',
         });
         if (success === true) {
+
+          toast("Registration successful.");
           navigate('/');
         }
       }
     } catch (error) {
       console.error('Auth error:', error);
+      toast("Registration failed.");
     } finally {
       setIsLoading(false);
     }

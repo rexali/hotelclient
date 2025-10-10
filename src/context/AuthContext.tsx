@@ -12,9 +12,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<any | null>({});
 
   useEffect(() => {
-    const savedUser = window.localStorage.getItem('currentUser');
+    const savedUser = JSON.parse(window.localStorage.getItem('currentUser') || '{}');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      setUser(savedUser);
     }
   }, []);
 
@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   }
 
-  const verifyToken = async (token:string): Promise<any> => {
+  const verifyToken = async (token:string) => {
 
     try {
 
