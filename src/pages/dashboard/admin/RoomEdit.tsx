@@ -107,7 +107,7 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
                 });
 
                 const result = await response.json() as ResponseType;
-
+                setImages(prev => ({ ...prev, files: result?.data?.room?.photos ?? [] }));
                 setRoom(result?.data?.room);
 
             } catch (error) {
@@ -117,9 +117,13 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
         }
 
         getRoomAPI(roomId);
-        createPreviewUrls(room?.photos ?? [])
 
-    }, [images, roomId])
+    }, [roomId]);
+
+    useEffect(() => {
+        createPreviewUrls(images.files);
+    }, [images.files]);
+
 
     if (room === null || undefined) {
         return <div className='text-center'>Loading...</div>
@@ -269,13 +273,10 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
                 {/* 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1' */}
                 <label className="block text-sm font-medium text-gray-700 mb-1">Images (comma separated URLs)</label>
                 {
-                    previewUrls?.length > 0 ? previewUrls.map((url: any) => {
-                        return <img key={url} src={BASE_URL_LOCAL+"/uploads/"+url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
+                    previewUrls?.length > 0 && previewUrls.map((url: any) => {
+                        return <img key={url} src={BASE_URL_LOCAL + "/uploads/" + url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
                     })
-                        :
-                        photos.map((url: any) => {
-                            return <img key={url} src={url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
-                        })
+
                 }
                 <input
                     name="images"
