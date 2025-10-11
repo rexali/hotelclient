@@ -5,6 +5,7 @@ import Form from "form-data";
 import { config } from '../../../config/config';
 import { Forward } from 'lucide-react';
 import { toast } from 'sonner';
+import { BASE_URL_LOCAL } from '../../../constants/constants';
 
 const roomTypes = ['single', 'double', 'triple', 'dormitory'];
 
@@ -17,6 +18,10 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
         files: [] as Array<any>
     });
 
+    const photos = [
+        'https://photos.pexels.com/photos/271618/pexels-photo-271618.jpeg',
+        'https://photos.pexels.com/photos/164595/pexels-photo-164595.jpeg'
+    ];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type, checked } = e.target as HTMLInputElement;
@@ -49,10 +54,11 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
 
     const createPreviewUrls = (files: Array<any>) => {
         let urls: any = [];
-        files.forEach(file => {
+        files?.forEach(file => {
             urls.push(URL.createObjectURL(file))
         })
-        setPreviewUrls(urls)
+
+        setPreviewUrls(urls);
     }
 
     const handleUpdateSubmit = async (e: React.FormEvent) => {
@@ -111,7 +117,7 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
         }
 
         getRoomAPI(roomId);
-        createPreviewUrls(room?.photos ?? images.files)
+        createPreviewUrls(room?.photos ?? [])
 
     }, [images, roomId])
 
@@ -260,11 +266,16 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
                 </div>
             </div>
             <div>
+                {/* 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1' */}
                 <label className="block text-sm font-medium text-gray-700 mb-1">Images (comma separated URLs)</label>
                 {
-                    previewUrls?.length > 0 && previewUrls.map((url: any) => {
-                        return <img key={url} src={url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
+                    previewUrls?.length > 0 ? previewUrls.map((url: any) => {
+                        return <img key={url} src={BASE_URL_LOCAL+"/uploads/"+url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
                     })
+                        :
+                        photos.map((url: any) => {
+                            return <img key={url} src={url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
+                        })
                 }
                 <input
                     name="images"
