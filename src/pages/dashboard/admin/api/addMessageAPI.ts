@@ -8,9 +8,13 @@ export interface AddMessagePayload {
     content: string;
     recipientId: string;
     senderId: string
+    fullName?: string
+    phone?: string
+    email?: string
+    inquiryType?: string,
 }
 
-export async function addMessageAPI(payload: AddMessagePayload) {
+export async function addMessageAPI(payload: any) {
     try {
         const _csrf = window.localStorage.getItem('csrf') as string;
 

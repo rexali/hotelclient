@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
+import { addMessageAPI } from './dashboard/admin/api/addMessageAPI';
+import { toast } from 'sonner';
 
-const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
+const initialFormData = {
+    fullName: '',
     email: '',
     phone: '',
     subject: '',
-    message: '',
+    content: '',
     inquiryType: 'general'
-  });
+  };
+
+const Contact: React.FC = () => {
+  const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
     console.log('Form submitted:', formData);
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
+    let result = await addMessageAPI(formData);
+    if (result) {
+      toast("Message sent!");
+      setFormData(initialFormData);
+      setIsSubmitted(true);
+      setTimeout(() => setIsSubmitted(false), 3000);
+    } else {
+      toast("Message not sent!");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -128,10 +139,10 @@ const Contact: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      id="name"
-                      name="name"
+                      id="fullName"
+                      name="fullName"
                       required
-                      value={formData.name}
+                      value={formData.fullName}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Your full name"
@@ -201,20 +212,20 @@ const Contact: React.FC = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Brief subject of your message"
+                    placeholder="Brief subject of your content"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
                     Message *
                   </label>
                   <textarea
-                    id="message"
-                    name="message"
+                    id="content"
+                    name="content"
                     required
                     rows={6}
-                    value={formData.message}
+                    value={formData.content}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     placeholder="Please describe your inquiry in detail..."
@@ -328,13 +339,13 @@ const Contact: React.FC = () => {
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="h-96 bg-gray-300 flex items-center justify-center">
               <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.9764542677494!2d8.542524274532385!3d11.976131035921783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x11ae8132a0dd23b3%3A0x1d15892c04225543!2sAlmubarak%20Waqf%20Foundation!5e0!3m2!1sen!2sng!4v1759930542722!5m2!1sen!2sng" width="100%" height="450" style={{ border: 0 }} allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
-            </div><br/><br/>
+            </div><br /><br />
             <div className="text-center">
-                <h3 className="text-lg font-semibold text-gray-900">Our Office Location</h3>
-                <p className="text-sm text-gray-500 mt-2">
-                  123 University Road, Victoria Island, Lagos, Nigeria
-                </p>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Our Office Location</h3>
+              <p className="text-sm text-gray-500 mt-2">
+                123 University Road, Victoria Island, Lagos, Nigeria
+              </p>
+            </div>
           </div>
 
         </div>

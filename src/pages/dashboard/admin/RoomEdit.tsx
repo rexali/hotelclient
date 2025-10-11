@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ResponseType } from '../../../types';
 import { updateRoomAPI } from '../../../api/rooms/updateRoomAPI';
 import Form from "form-data";
-import { config } from '../../../config/config';
 import { Forward } from 'lucide-react';
 import { toast } from 'sonner';
 import { BASE_URL_LOCAL } from '../../../constants/constants';
+import { getRoomAPI } from './api/getRoomAPI';
 
 const roomTypes = ['single', 'double', 'triple', 'dormitory'];
 
@@ -100,23 +99,11 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
 
     useEffect(() => {
 
-        const getRoomAPI = async function getRoomAPI(id: number) {
-            try {
-                const response = await fetch(config.BASE_URL_LOCAL + "/api/v1/rooms/" + id, {
-                    credentials: 'include'
-                });
-
-                const result = await response.json() as ResponseType;
-                setImages(prev => ({ ...prev, files: result?.data?.room?.photos ?? [] }));
-                setRoom(result?.data?.room);
-
-            } catch (error) {
-                console.warn(error);
-
-            }
-        }
-
-        getRoomAPI(roomId);
+        (async () => {
+            let result = await getRoomAPI(roomId);
+            // setImages(prev => ({ ...prev, files: result?.room?.photos ?? [] }));
+            setRoom(result?.room);
+        })()
 
     }, [roomId]);
 
@@ -133,9 +120,6 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
         return <div className='text-center'>Loading...</div>
     }
 
-    if (!Object.keys(room).length) {
-        return <div className='text-center'>Error!</div>
-    }
 
     return (
         <form
@@ -274,10 +258,15 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
                 </div>
             </div>
             <div>
-                {/* 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1' */}
                 <label className="block text-sm font-medium text-gray-700 mb-1">Images (comma separated URLs)</label>
-                {
+                {/* {
                     previewUrls?.length > 0 && previewUrls.map((url: any) => {
+                        return <img key={url} src={url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
+                    })
+
+                } */}
+                {
+                    room?.photos?.length > 0 && room?.photos?.map((url: any) => {
                         return <img key={url} src={BASE_URL_LOCAL + "/uploads/" + url} alt={url} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
                     })
 
@@ -305,7 +294,7 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
                 <label className="block text-sm font-medium text-gray-700 mb-1">Featured</label>
                 <select
                     name="featured"
-                    value={room.featured ? "true" : "false"}
+                    value={room?.featured ? "true" : "false"}
                     onChange={e => setRoom((prev: any) => ({ ...prev, featured: e.target.value === 'true' ? true : false }))}
                     required
                     className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -77,7 +77,7 @@ const AppContent: React.FC = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-      <Toaster />
+      <Toaster position='top-center' />
       <Footer />
     </div>
   );

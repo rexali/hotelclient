@@ -77,7 +77,7 @@ export const MessagesTab = () => {
                     <span className="text-xs text-gray-400">{msg.createdAt instanceof Date ? msg.createdAt.toLocaleDateString() : new Date(msg.createdAt).toLocaleDateString()}</span>
                   </div>
                   <p className="text-gray-700 mt-1 text-sm">{msg.content}</p>
-                  <div className="mt-2 text-xs text-gray-500">From: {sender?.name || sender?.fullName || msg.senderId} | To: {receiver?.name || receiver?.fullName || msg.receiverId}</div>
+                  <div className="mt-2 text-xs text-gray-500">From: {sender?.name || sender?.username || msg.senderId} | To: {receiver?.name || receiver?.username || msg.receiverId}</div>
                   <br /><div className="flex justify-between items-center">
                     <button type="button" onClick={() => handleRemoveMessage(msg.id)}><Trash /></button>
                     <button type="button" onClick={() => handleEditMessage(true, msg.id)}><Edit /></button>
