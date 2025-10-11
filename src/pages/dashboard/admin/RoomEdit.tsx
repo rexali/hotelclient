@@ -48,14 +48,14 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
             ...prev,
             images: filenames
         }));
-        setImages(prevImg => ({ ...prevImg, filenames: filenames, files: [...e.target.files] }));
+        setImages(prev => ({ ...prev, filenames: filenames, files: [...e.target.files] }));
     };
 
 
     const createPreviewUrls = (files: Array<any>) => {
         let urls: any = [];
         files?.forEach(file => {
-            urls.push(URL.createObjectURL(file))
+            urls.push(URL.createObjectURL(file));
         })
 
         setPreviewUrls(urls);
@@ -121,7 +121,11 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
     }, [roomId]);
 
     useEffect(() => {
-        createPreviewUrls(images.files);
+        try {
+            createPreviewUrls(images.files);
+        } catch (error) {
+            console.warn(error);
+        }
     }, [images.files]);
 
 
