@@ -6,6 +6,7 @@ import { getAllUsersAPI } from "./api/getAllUsersAPI";
 import MessageEdit from "./MessageEdit";
 import Pagination from "../../../components/common/Pagination";
 import { removeMessageAPI } from "./api/removeMessageAPI";
+import { Link } from "react-router-dom";
 
 
 export const MessagesTab = () => {
@@ -16,6 +17,8 @@ export const MessagesTab = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [users, setUsers] = useState<any>([]);
+  const [guests, setGuests] = useState<any>([]);
+
 
 
   useEffect(() => {
@@ -24,6 +27,7 @@ export const MessagesTab = () => {
       let result = await getAllUsersAPI();
       setUsers(result.users);
       const { messages } = await getMessagesAPI(currentPage);
+      setGuests(messages?.messages.filter((msg: any) => (msg.email !== null || undefined) && (msg.fullName !==null || undefined)))
       setTotalPages(messages?.messageCount);
       setMessages(messages?.messages);
     })();
@@ -86,6 +90,38 @@ export const MessagesTab = () => {
               </li>
             );
           })}
+        </ul>
+      </div><br />
+
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Guest messages </h2>
+
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <ul>
+          {guests?.length === 0 && (
+            <li className="p-6 text-center text-gray-500">No messages found.</li>
+          )}
+          {guests?.slice().sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((msg: any) => {
+            return (
+              <li key={msg.id} className={`flex items-start px-6 py-4 ${msg.read ? 'bg-gray-50' : 'bg-blue-50'}`}>
+                <div className="flex-shrink-0 mt-1">
+                  <MessageCircle className="h-6 w-6 text-blue-500" />
+                </div>
+                <div className="ml-4 flex-1">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-900">{msg.subject}</span>
+                    <span className="text-xs text-gray-400">{msg.createdAt instanceof Date ? msg.createdAt.toLocaleDateString() : new Date(msg.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <p className="text-gray-700 mt-1 text-sm">{msg.content}</p>
+                  <div className="mt-2 text-xs text-gray-500">From: <Link to={"mailto:"+msg.email}>{msg.email} </Link>| To: <Link to={"mailto:admin@"+window.origin.split('//')[1] ||"gmail.com"}>Admin</Link></div>
+                  <br /><div className="flex justify-between items-center">
+                    <button type="button" onClick={() => handleRemoveMessage(msg.id)}><Trash /></button>
+                    <button type="button" onClick={() => handleEditMessage(true, msg.id)}><Edit /></button>
+                  </div>
+                </div>
+              </li>
+            );
+          })
+          }
         </ul>
       </div>
       <div>

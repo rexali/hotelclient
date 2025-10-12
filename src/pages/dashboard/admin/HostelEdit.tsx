@@ -25,7 +25,7 @@ const initialHostel: Hostel = {
 export default function HostelEdit({ hostelId, setEdit }: { hostelId: number, setEdit: any },) {
     const [hostel, setHostel] = useState<Hostel>(initialHostel);
     const [status, setStatus] = useState("");
-    const [previewUrl, setPreviewUrl] = useState({});
+    // const [previewUrl, setPreviewUrl] = useState({});
     const [image, setImage] = useState<any>({
         filenames: "" as string,
         photo: {} as any,
@@ -190,7 +190,7 @@ export default function HostelEdit({ hostelId, setEdit }: { hostelId: number, se
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
-                    {hostel?.photo && <img src={BASE_URL_LOCAL + "/uploads/" + hostel?.photo} alt={hostel?.name} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />}
+                    {hostel?.photo && <img crossOrigin='use-credentials' src={BASE_URL_LOCAL + "/uploads/" + hostel?.photo} alt={hostel?.name} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />}
                     <input
                         name="photo"
                         type='file'

@@ -343,7 +343,7 @@ const Auth: React.FC = () => {
         </div>
 
         {/* Demo Credentials */}
-        {isLogin && (
+        {/* {isLogin && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm">
             <h3 className="font-medium text-blue-900 mb-2">Demo Credentials:</h3>
             <p className="text-blue-700">
@@ -352,7 +352,7 @@ const Auth: React.FC = () => {
               <strong>Password:</strong> any password works
             </p>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

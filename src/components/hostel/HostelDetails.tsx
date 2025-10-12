@@ -47,7 +47,7 @@ const HostelDetails: React.FC = () => {
         <section className="relative bg-blue-700 text-white py-16 px-4 rounded-b-3xl shadow-lg mb-8">
             <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-8">
                 {hostel?.photo && (
-                    <img src={hostel?.photo} alt={hostel?.name} className="w-56 h-56 object-cover rounded-2xl shadow-lg border-4 border-white" />
+                    <img crossOrigin='use-credentials' src={hostel?.photo} alt={hostel?.name} className="w-56 h-56 object-cover rounded-2xl shadow-lg border-4 border-white" />
                 )}
                 <div className="flex-1">
                     <h1 className="text-4xl font-extrabold mb-2">{hostel?.name}</h1>

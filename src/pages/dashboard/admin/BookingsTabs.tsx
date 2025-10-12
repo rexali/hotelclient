@@ -19,7 +19,8 @@ export const BookingsTab = () => {
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Room Transactions</h2>
       <div className="bg-white rounded-lg shadow-md overflow-x-auto">
-        <table className="w-full min-w-[600px]">
+        {/* <table className="w-full min-w-[600px]"> */}
+        <table className="w-full table-auto">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">User</th>

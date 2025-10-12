@@ -267,7 +267,8 @@ export default function RoomEdit({ roomId, setEdit }: { setEdit: any, roomId: an
                 } */}
                 {
                     room?.photos?.length > 0 && room?.photos?.map((url: any) => {
-                        return <img key={url} src={BASE_URL_LOCAL + "/uploads/" + url} alt={"room photo"} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
+              
+                        return <img crossOrigin='use-credentials' key={url} src={BASE_URL_LOCAL + "/uploads/" + url} alt={"room photo"} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
                     })
 
                 }

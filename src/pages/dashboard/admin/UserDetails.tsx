@@ -34,7 +34,6 @@ const UserDetails = ({ setOpen }: { setOpen: any }) => {
 
             <div className="flex items-center mb-6">
                 <div className="w-20 h-20 bg-gradient-to-r from-red-600 to-orange-600 rounded-full flex items-center justify-center mr-6">
-                    {/* <User className="h-10 w-10 text-white" /> */}
                     <img crossOrigin="" src={BASE_URL_LOCAL + "/uploads/" + profile.image} alt={profile.image} width={10} height={10} style={{ margin: 2, height: "auto", width: "auto", display: "inline-block" }} />
                 </div>
                 <div>
