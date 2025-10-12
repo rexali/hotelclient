@@ -54,7 +54,7 @@ export default function ReviewAdd({ RoomId }: { RoomId: string }) {
             onSubmit={handleSubmit}
             className="mx-auto bg-white p-6 rounded-lg shadow space-y-6"
         >
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 text-center">Add a New Review</h2>
+            {/* <h2 className="text-xl font-bold mb-4 text-gray-900 text-left">Add review</h2> */}
 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Review</label>

@@ -14,10 +14,9 @@ interface ReviewListProps {
 }
 
 export const ReviewList = ({ reviews }: ReviewListProps) => {
-  console.log(reviews);
   return (
     <div className="">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Reviews</h2>
+      {/* <h2 className="text-xl font-bold text-gray-900 mb-6">Reviews</h2> */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <ul className="divide-y divide-gray-200">
           {reviews?.length === 0 && (

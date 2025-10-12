@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import RoomDetailsCard from '../components/rooms/RoomDetailsCard';
-// import { Room } from '../types';
 import { getRoomAPI } from './api/getRoomAPI';
 import { ReviewList } from './components/ReviewList';
 import ReviewAdd from './components/ReviewAdd';
+import { addFavouriteRoomAPI } from './api/addFavouriteRoomAPI';
+import { toast } from 'sonner';
+import { makePaymentAPI } from '../payment/makePaymentAPI';
+import { useAuth } from '../context/AuthContext';
+import { handleShare } from '../utils/handleShare';
+import { handleViewLocation } from '../utils/handleViewLocation';
+import { handleContact } from '../utils/handlePhoneCall';
 
 const RoomDetails: React.FC = () => {
   // If using react-router-dom v6+
@@ -12,12 +18,29 @@ const RoomDetails: React.FC = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<any>({});
   const room = data;
+  const {user} = useAuth()
+  
+const handleAddFavourite = async (roomId: any) => {
+    if (user.userId) {
+      let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+      if (result) {
+        toast(result)
+      }
+      // Redirect to login or show login modal
+    } else {
+      navigate("/auth")
+    }
+
+  };
+
+  const handlePayment = async (roomId: any, roomPrice: any) => {
+    // Redirect to payment page or open payment modal
+    await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
+  };
 
   useEffect(() => {
     (async () => {
       let room = await getRoomAPI(id as unknown as number);
-      console.log(room);
-
       setData(room);
     })();
   }, [id])
@@ -37,9 +60,17 @@ const RoomDetails: React.FC = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <RoomDetailsCard room={room} />
-      {room?.Reviews && <ReviewList reviews={[...room?.Reviews]} />}<br /><br />
+    <div className="max-w-2xl mx-auto py-8 px-4">
+      <RoomDetailsCard
+        room={room}
+        onFavorite={handleAddFavourite }
+        onPayment={handlePayment}
+        onShare={handleShare}
+        onViewLocation={handleViewLocation }
+        onContact={handleContact}
+        // isFavorite
+      /><br />
+      {room?.Reviews && <ReviewList reviews={[...room?.Reviews]} />}<br />
       {/* TO Do: Check if user signin and booked it */}
       <ReviewAdd RoomId={room.id} />
     </div>

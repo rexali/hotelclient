@@ -163,7 +163,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="flex space-x-1">
+          <div className="flex space-x-1"> 
             <button
               onClick={() => onShare?.(room)}
               className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
@@ -172,24 +172,22 @@ const RoomCard: React.FC<RoomCardProps> = ({
               {/* <span className="text-sm">Share</span> */}
             </button>
             <button
-              // onClick={() => onViewLocation?.(room.location)}
               className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
             >
               <Link to={onViewLocation?.(room.location) as string} target={"_blank"}>
                 <MapPin className="h-4 w-4" />
               </Link>
-              {/* <span className="text-sm">Map</span> */}
             </button>
           </div>
 
           <div className="flex space-x-1">
             <button className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
-              <Link to={"tel:" + onContact?.(room.agentPhone)}>
+              <Link to={"tel://" + onContact?.(room.agentPhone)}>
                 <Phone className="h-4 w-4" />
                 {/* <span className="text-sm">Contact</span> */}
               </Link>
             </button>
-            {user?.userId && room?.availability !== true && (
+            {user?.userId && room?.availability === true && (
               <button
                 onClick={() => onPayment?.(room.id, room.price)}
                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
