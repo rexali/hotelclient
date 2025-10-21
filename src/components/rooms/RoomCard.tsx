@@ -96,12 +96,12 @@ const RoomCard: React.FC<RoomCardProps> = ({
         </div>
         <button
           onClick={() => onFavorite?.(room?.id)}
-          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 ${room?.likes.includes(user.userId)
+          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 ${room?.likes?.includes(user?.userId)
             ? 'bg-red-500 text-white'
             : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-500'
             }`}
         >
-          <Heart className={`h-5 w-5 ${room?.likes.includes(user.userId) ? 'fill-current' : ''}`} />
+          <Heart className={`h-5 w-5 ${room?.likes?.includes(user?.userId) ? 'fill-current' : ''}`} />
         </button>
       </div>
 
