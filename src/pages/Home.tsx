@@ -10,17 +10,17 @@ import { toast } from 'sonner';
 import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
-import { getCSRFTokenAPI } from '../api/getCSRFTokenAPI';
+// import { getCSRFTokenAPI } from '../api/getCSRFTokenAPI';
 
 
-(async () => {
-  // get token and store in local storage
-  try {
-    await getCSRFTokenAPI();
-  } catch (error) {
-    console.warn(error);
-  }
-})();
+// (async () => {
+//   // get token and store in local storage
+//   try {
+//     await getCSRFTokenAPI();
+//   } catch (error) {
+//     console.warn(error);
+//   }
+// })();
 
 const Home: React.FC = () => {
   const { user } = useAuth()

@@ -6,7 +6,7 @@ import { BASE_URL_LOCAL } from '../../constants/constants';
 import { Link } from 'react-router-dom';
 
 interface RoomDetailsProps {
-  room: Room;
+  room: any;
   onFavorite?: (roomId: string) => Promise<any>;
   onShare?: (room: Room) => void;
   onContact?: (phone: string) => string;
@@ -53,7 +53,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({
       {/* Responsive Image Gallery */}
       <div className="relative w-full">
         <div className="flex overflow-x-auto gap-2 h-56 md:h-72">
-          {room?.photos?.map((img, idx) => (
+          {room?.photos?.map((img:any, idx:any) => (
             <img
               key={img + idx}
               src={BASE_URL_LOCAL + "/uploads/" + img}
@@ -82,12 +82,12 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({
         </div>
         <button
           onClick={() => onFavorite?.(room?.id)}
-          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 z-10 ${isFavorite
+          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 z-10 ${room?.likes.includes(user.userId)
             ? 'bg-red-500 text-white'
             : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-500'
             }`}
         >
-          <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
+          <Heart className={`h-5 w-5 ${room?.likes.includes(user.userId) ? 'fill-current' : ''}`} />
         </button>
       </div>
 
@@ -120,7 +120,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {room?.amenities?.slice(0, 3)?.map((amenity, i) => (
+          {room?.amenities?.slice(0, 3)?.map((amenity:any, i:any) => (
             <span
               key={amenity + i}
               className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"

@@ -7,7 +7,7 @@ export async function makePaymentAPI(data: { amount: any, roomId: any, userId: a
 
         const _csrf = window.localStorage.getItem('csrf') as string;
         let response = await fetch(`${config.BASE_URL_LOCAL}/api/v1/get_transaction_url`, {
-            body: JSON.stringify(data),
+            body: JSON.stringify({ ...data, amount: Number(data.amount) * 100 }),
             method: "POST",
             credentials: 'include',
             headers: {
