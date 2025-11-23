@@ -3,7 +3,7 @@ import { Users, Target, Award, Heart, Building, MapPin, Phone, Mail } from 'luci
 
 const About: React.FC = () => {
   const stats = [
-    { number: '10,000+', label: 'Happy Students' },
+    { number: '10,000+', label: 'Happy Users' },
     { number: '500+', label: 'Partner Universities' },
     { number: '25+', label: 'Cities Covered' },
     { number: '98%', label: 'Satisfaction Rate' }
@@ -13,12 +13,12 @@ const About: React.FC = () => {
     {
       icon: Target,
       title: 'Student-Centered',
-      description: 'Everything we do is designed with students in mind, from our user-friendly platform to our responsive customer service.'
+      description: 'Everything we do is designed with users in mind, from our user-friendly platform to our responsive customer service.'
     },
     {
       icon: Heart,
       title: 'Community Building',
-      description: 'We believe in creating more than just housing - we foster communities where students can thrive and build lasting friendships.'
+      description: 'We believe in creating more than just housing - we foster communities where users can thrive and build lasting friendships.'
     },
     {
       icon: Award,
@@ -49,7 +49,7 @@ const About: React.FC = () => {
       name: 'Aisha Okafor',
       role: 'Head of Student Relations',
       image: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg',
-      description: 'Student affairs specialist dedicated to creating supportive living environments for students.'
+      description: 'Student affairs specialist dedicated to creating supportive living environments for users.'
     },
     {
       name: 'David Williams',
@@ -66,7 +66,7 @@ const About: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              About HostelHub
+              About HotelHub
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
               Transforming student housing experiences through innovative technology, quality accommodations, and exceptional service since 2020.
@@ -84,21 +84,21 @@ const About: React.FC = () => {
                 Our Mission
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                To revolutionize student housing by providing a seamless, technology-driven platform that connects students with safe, affordable, and comfortable accommodations while fostering vibrant communities that support academic success and personal growth.
+                To revolutionize student housing by providing a seamless, technology-driven platform that connects users with safe, affordable, and comfortable accommodations while fostering vibrant communities that support your success and personal growth.
               </p>
               <div className="space-y-4">
                 <div className="flex items-start">
                   <Target className="h-6 w-6 text-blue-600 mt-1 mr-3 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Accessibility</h3>
-                    <p className="text-gray-600">Making quality student housing accessible to all students regardless of background.</p>
+                    <p className="text-gray-600">Making quality student housing accessible to all users regardless of background.</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <Heart className="h-6 w-6 text-blue-600 mt-1 mr-3 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Community</h3>
-                    <p className="text-gray-600">Building supportive communities where students can thrive academically and socially.</p>
+                    <p className="text-gray-600">Building supportive communities where users can thrive socially.</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -113,7 +113,7 @@ const About: React.FC = () => {
             <div>
               <img
                 src="https://images.pexels.com/photos/1595391/pexels-photo-1595391.jpeg"
-                alt="Students studying together"
+                alt="Users studying together"
                 className="w-full h-96 object-cover rounded-xl shadow-lg"
               />
             </div>
@@ -164,13 +164,13 @@ const About: React.FC = () => {
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  HostelHub was born out of a simple observation: finding quality student accommodation in Nigeria was unnecessarily difficult and time-consuming. As former students ourselves, we experienced firsthand the challenges of searching for safe, affordable, and convenient housing.
+                  HotelHub was born out of a simple observation: finding quality student accommodation in Nigeria was unnecessarily difficult and time-consuming. As former users ourselves, we experienced firsthand the challenges of searching for safe, affordable, and convenient housing.
                 </p>
                 <p>
                   Founded in 2020 by a team of education and technology enthusiasts, we set out to create a platform that would simplify this process. We started with just 50 rooms in Lagos and have since expanded to over 10,000 rooms across 25 cities in Nigeria.
                 </p>
                 <p>
-                  Today, HostelHub is more than just a booking platform. We're a community of students, property owners, and education partners working together to create better living experiences that support academic success and personal growth.
+                  Today, HotelHub is more than just a booking platform. We're a community of users, property owners, and education partners working together to create better living experiences that support your success and personal growth.
                 </p>
                 <p>
                   Our journey continues as we expand our reach and innovate new ways to serve the student community across Africa and beyond.
@@ -221,7 +221,7 @@ const About: React.FC = () => {
               Meet Our Team
             </h2>
             <p className="text-lg text-gray-600">
-              The passionate individuals behind HostelHub
+              The passionate individuals behind HotelHub
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -284,7 +284,7 @@ const About: React.FC = () => {
             </div>
             <div className="flex items-center justify-center space-x-2">
               <Mail className="h-5 w-5" />
-              <span>info@hostelhub.com</span>
+              <span>info@hotelhub.com</span>
             </div>
           </div>
         </div>

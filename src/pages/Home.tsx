@@ -10,17 +10,7 @@ import { toast } from 'sonner';
 import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
-// import { getCSRFTokenAPI } from '../api/getCSRFTokenAPI';
-
-
-// (async () => {
-//   // get token and store in local storage
-//   try {
-//     await getCSRFTokenAPI();
-//   } catch (error) {
-//     console.warn(error);
-//   }
-// })();
+import { handleContact } from '../utils/handlePhoneCall';
 
 const Home: React.FC = () => {
   const { user } = useAuth()
@@ -29,12 +19,12 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const handlePayment = async (roomId: any, roomPrice: any) => {
-    await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
+    await makePaymentAPI({ roomId, userId: user?.userId, amount: roomPrice, email: user.email });
   };
 
   const handleAddFavourite = async (roomId: any) => {
     if (user?.userId) {
-      let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+      let result = await addFavouriteRoomAPI({ roomId, userId: user?.userId });
       if (result) {
         toast(result)
       }
@@ -60,35 +50,35 @@ const Home: React.FC = () => {
       moutRef.current = false
     }
   })
-
+  
 
   const roomCategories = [
     {
       name: 'Single Rooms',
       description: 'Perfect for focused studying',
       image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg',
-      link: '/rooms?type=single',
+      link: '/rooms?typez=single',
       count: data?.rooms?.filter((r: any) => r.type === 'single').length
     },
     {
       name: 'Double Rooms',
       description: 'Great for shared living',
       image: 'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg',
-      link: '/rooms?type=double',
+      link: '/rooms?typez=double',
       count: data?.rooms?.filter((r: any) => r.type === 'double').length
     },
     {
       name: 'Triple Suites',
       description: 'Spacious group accommodation',
       image: 'https://images.pexels.com/photos/1743559/pexels-photo-1743559.jpeg',
-      link: '/rooms?type=triple',
+      link: '/rooms?typez=triple',
       count: data?.rooms?.filter((r: any) => r.type === 'triple').length
     },
     {
       name: 'Dormitories',
       description: 'Budget-friendly options',
       image: 'https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg',
-      link: '/rooms?type=dormitory',
+      link: '/rooms?typez=dormitory',
       count: data?.rooms?.filter((r: any) => r.type === 'dormitory').length
     }
   ];
@@ -176,10 +166,10 @@ const Home: React.FC = () => {
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Find Your Perfect
-              <span className="block text-blue-300">Student Home</span>
+              <span className="block text-blue-300">Hotels and Rooms</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Discover comfortable, safe, and affordable accommodation options tailored for students across Nigeria.
+              Discover comfortable, safe, and affordable accommodation options tailored for you across Nigeria.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -211,7 +201,7 @@ const Home: React.FC = () => {
               Use our advanced search filters to find accommodation that perfectly matches your needs and budget.
             </p>
           </div>
-          <SearchFilters />
+          <SearchFilters  />
         </div>
       </section>
 
@@ -259,7 +249,7 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-6">
-              Why Choose HostelHub?
+              Why Choose HotelHub?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
               <div className="text-center">
@@ -318,6 +308,8 @@ const Home: React.FC = () => {
                   onShare={handleShare}
                   onPayment={handlePayment}
                   onFavorite={handleAddFavourite}
+                  onContact={handleContact}
+                  isFavorite={room?.likes?.includes(user?.userId)}
                 />
               ))}
             </div>

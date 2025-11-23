@@ -7,7 +7,7 @@ import { updateUserProfileAPI } from "../../../api/profile/updateUserProfile";
 import { BASE_URL_LOCAL} from "../../../constants/constants";
 const ProfileTab = () => {
 
-    const { user }: { user: any } = useAuth();
+    const { user}: { user: any } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [profile, setProfile] = useState<any>(user?.profile || {});
     const [status, setStatus] = useState('');
@@ -93,7 +93,7 @@ const ProfileTab = () => {
                     <p className="text-sm text-gray-500">User since {new Date(profile?.createdAt || '').toLocaleDateString()}</p>
                 </div>
             </div>
-
+ 
             <form className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -242,12 +242,12 @@ const ProfileTab = () => {
                         {isEditing ? (
                             <input
                                 type="date"
-                                defaultValue={new Date(profile?.dateOfBirth || '').toLocaleDateString().split('/').reverse().join('-')}
+                                defaultValue={new Date(profile?.dateOfBirth).toLocaleDateString().split('/').reverse().join('-') || ''}
                                 onChange={(e) => setProfile({ ...profile, dateOfBirth: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         ) : (
-                            <p className="py-2 text-gray-900">{new Date(profile?.dateOfBirth || 'Not provided').toLocaleDateString()}</p>
+                            <p className="py-2 text-gray-900">{new Date(profile?.dateOfBirth).toLocaleDateString() || 'Not provided'}</p>
                         )}
                     </div>
                 </div>

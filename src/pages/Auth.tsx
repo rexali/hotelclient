@@ -4,6 +4,7 @@ import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff, Building } from 'lucide-r
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 import { verifyTokenAPI } from '../api/verifyTokenAPI';
+import { statesLGsInObject } from '../data/stateData';
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -41,14 +42,9 @@ const Auth: React.FC = () => {
     try {
       if (isLogin) {
         const token = await login(formData.username, formData.password);
-        console.log(token);
         if (token) {
           toast("User authenticated. Wailting for verification...");
-          // const user = await verifyToken(token);
           const user = await verifyTokenAPI(token);
-
-          console.log(user);
-
           if (user) {
             setUser(user);
             window.localStorage.setItem('currentUser', JSON.stringify(user));
@@ -79,7 +75,6 @@ const Auth: React.FC = () => {
           permission: ["read", "write"]
         });
         if (success === true) {
-
           toast("Registration successful.");
           navigate('/');
         }
@@ -94,7 +89,7 @@ const Auth: React.FC = () => {
 
   const nigerianStates = [
     'Lagos', 'Abuja', 'Kano', 'Kaduna', 'Rivers', 'Oyo', 'Ogun', 'Imo', 'Anambra', 'Enugu',
-    'Delta', 'Edo', 'Cross River', 'Akwa Ibom', 'Bayelsa', 'Benue', 'Kogi', 'Nasarawa',
+    'Delta', 'Edo', 'Cross_River', 'Akwa_Ibom', 'Bayelsa', 'Benue', 'Kogi', 'Nasarawa',
     'Plateau', 'Taraba', 'Adamawa', 'Bauchi', 'Borno', 'Gombe', 'Yobe', 'Jigawa',
     'Katsina', 'Kebbi', 'Sokoto', 'Zamfara', 'Niger', 'Kwara', 'Ondo', 'Ekiti', 'Osun', 'Abia'
   ];
@@ -193,8 +188,9 @@ const Auth: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2 flex justify-between">
                 Password
+                {isLogin && <a href="#" onClick={() => navigate('forget-password')}>Forget Password</a>}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -265,26 +261,10 @@ const Auth: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="localGovt" className="block text-sm font-medium text-gray-700 mb-2">
-                        Local Government
-                      </label>
-                      <input
-                        autoComplete='new-local-government'
-                        id="localGovt"
-                        name="localGovt"
-                        type="text"
-                        required={!isLogin}
-                        value={formData.localGovt}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="LGA"
-                      />
-                    </div>
-                    <div>
                       <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-2">
                         State
                       </label>
-                      <select
+                      <select 
                         id="state"
                         name="state"
                         required={!isLogin}
@@ -298,6 +278,26 @@ const Auth: React.FC = () => {
                         ))}
                       </select>
                     </div>
+
+                    <div>
+                      <label htmlFor="localGovt" className="block text-sm font-medium text-gray-700 mb-2">
+                        Local Government
+                      </label>
+                      <select
+                        id="localGovt"
+                        name="localGovt"
+                        required={!isLogin}
+                        value={formData.localGovt}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">Select LG</option>
+                        {(statesLGsInObject[formData.state])?.map((LG: any) => (
+                          <option key={LG} value={LG}>{LG}</option>
+                        ))}
+                      </select>
+                    </div>
+
                   </div>
                 </div>
               </>

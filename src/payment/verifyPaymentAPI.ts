@@ -1,7 +1,8 @@
-import { config } from "../config/config";
+import { config } from "../config/config.ts";
+import { ResponseType } from "../types";
 
 
-export async function verifyPayment(reference: any) {
+export async function verifyPaymentAPI(reference: any) {
 
     try {
         const _csrf = window.localStorage.getItem('csrf') as string;
@@ -9,14 +10,19 @@ export async function verifyPayment(reference: any) {
             body: JSON.stringify({ reference }),
             headers: {
                 'Content-Type': 'application/json',
-                "X-CSRF-Token": _csrf
+                "X-XSRF-TOKEN": _csrf,
             },
             method: "POST",
             credentials: 'include',
         });
-        let result = await response.json();
+        const { data, status } = await response.json() as ResponseType;
 
-        return result.data;
+        if (status === 'success') {
+
+            return data;
+        }
+
+        return;
 
     } catch (error) {
         console.warn(error);

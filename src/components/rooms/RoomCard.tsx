@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Heart, Share2, MapPin, Users, Phone, CreditCard, Star } from 'lucide-react';
 import { Room } from '../../types';
 import { useAuth } from '../../context/AuthContext';
@@ -26,7 +26,15 @@ const RoomCard: React.FC<RoomCardProps> = ({
 }) => {
 
   const { user } = useAuth();
-
+  const [checkInCheckOutForm, setCheckInCheckOutForm] = useState(false);
+  const [checkInCheckOutData, setCheckInCheckOutData] = useState({
+    checkIn: '',
+    checkOut: '',
+    roomId: '',
+    roomPrice: 0,
+    userId: user?.userId
+  });
+   
   const photos = [
     'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg',
     'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg'
@@ -52,6 +60,40 @@ const RoomCard: React.FC<RoomCardProps> = ({
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+
+  async function handleSend(): Promise<void> {
+    window.localStorage.setItem('checkoutData', JSON.stringify(checkInCheckOutData));
+    setCheckInCheckOutForm(false);
+    await handleContineCheckOut(checkInCheckOutData.roomId, checkInCheckOutData.roomPrice);
+    setTimeout(() => {
+      setCheckInCheckOutData(prev=>({
+        ...prev,
+        roomPrice: 0,
+        checkIn: '',
+        checkOut: '',
+        roomId: '',
+      }))
+    }, 3000);
+
+  }
+
+  async function handleContineCheckOut(roomId: string, roomPrice: number): Promise<void> {
+    console.log(JSON.parse(window.localStorage.getItem('checkoutData') || '{}'));
+
+    await onPayment?.(roomId, roomPrice);
+  }
+
+  function handleChangeCheckInCheckOut(event: ChangeEvent<HTMLInputElement>, roomId: string, roomPrice: number): void {
+    const { name, value } = event.target;
+    setCheckInCheckOutData(prev => ({
+      ...prev,
+      roomId,
+      roomPrice,
+      [name]: value
+    }))
+
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -96,12 +138,12 @@ const RoomCard: React.FC<RoomCardProps> = ({
         </div>
         <button
           onClick={() => onFavorite?.(room?.id)}
-          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 ${room?.likes?.includes(user?.userId)
+          className={`absolute bottom-4 right-4 p-2 rounded-full transition-colors duration-200 ${isFavorite
             ? 'bg-red-500 text-white'
             : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-500'
             }`}
         >
-          <Heart className={`h-5 w-5 ${room?.likes?.includes(user?.userId) ? 'fill-current' : ''}`} />
+          <Heart className={`h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
         </button>
       </div>
 
@@ -112,7 +154,14 @@ const RoomCard: React.FC<RoomCardProps> = ({
             {room?.name}
           </h3>
           <div className="flex items-center space-x-1">
-            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+            {room?.rating === 0 && <Star className="h-4 w-4 text-yellow-400 fill-current" />}
+            {[...Array(room?.rating)].map((_, i) => (
+              <Star
+                key={i}
+                className={`h-4 w-4 ${i < room?.rating ? "text-yellow-400" : "text-gray-300"}`}
+                fill={i < room?.rating ? "#facc15" : "none"}
+              />
+            ))}
             <span className="text-sm text-gray-600">{room?.rating}</span>
           </div>
         </div>
@@ -134,7 +183,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         </div>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {room?.amenities.slice(0, 3).map((amenity:any, i:any) => (
+          {room?.amenities?.slice(0, 3).map((amenity: any, i: any) => (
             <span
               key={i}
               className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
@@ -142,9 +191,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
               {amenity}
             </span>
           ))}
-          {room?.amenities.length > 3 && (
+          {room?.amenities?.length > 3 && (
             <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md">
-              +{room?.amenities.length - 3} more
+              +{room?.amenities?.length - 3} more
             </span>
           )}
         </div>
@@ -154,7 +203,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
             <span className="text-2xl font-bold text-blue-600">
               {formatPrice(room?.price)}
             </span>
-            <span className="text-gray-600 text-sm">/semester</span>
+            <span className="text-gray-600 text-sm">/night</span>
           </div>
           <span className="text-sm text-gray-600">
             Room #{room?.id}
@@ -163,7 +212,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="flex space-x-1"> 
+          <div className="flex space-x-1">
             <button
               onClick={() => onShare?.(room)}
               className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200"
@@ -182,14 +231,16 @@ const RoomCard: React.FC<RoomCardProps> = ({
 
           <div className="flex space-x-1">
             <button className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
-              <Link to={"tel://" + onContact?.(room.agentPhone)}>
+              <Link to={"tel:" + onContact?.(room?.agentPhone)}>
                 <Phone className="h-4 w-4" />
                 {/* <span className="text-sm">Contact</span> */}
               </Link>
             </button>
-            {user?.userId && room?.availability === true && (
+            {room?.availability === true && (
               <button
-                onClick={() => onPayment?.(room.id, room.price)}
+                onClick={() => {
+                  setCheckInCheckOutForm(true);
+                }}
                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 <CreditCard className="h-4 w-4" />
@@ -203,10 +254,59 @@ const RoomCard: React.FC<RoomCardProps> = ({
         <div className="mt-4 pt-4 border-t border-gray-100">
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>Agent: {room?.agentName}</span>
-            <span>{room?.agentPhone}</span>
+            <Link to={'sms://' + room?.agentPhone}>SMS: {room?.agentPhone?.substr(1, room?.agentPhone?.length - 3)}..</Link>
           </div>
         </div>
       </div>
+
+
+      {/* Contact Form Modal */}
+      {checkInCheckOutForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-xl font-bold mb-4">Enter Check in and Check date?</h3>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Check in</label>
+              <input
+                type="date"
+                name="checkIn"
+                onChange={(e) => handleChangeCheckInCheckOut(e, room.id, room.price)}
+                value={checkInCheckOutData.checkIn}
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Check out</label>
+              <input
+                type="date"
+                name="checkOut"
+                onChange={(e) => handleChangeCheckInCheckOut(e, room.id, room.price)}
+                value={checkInCheckOutData.checkOut}
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setCheckInCheckOutForm(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSend}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Continue to Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

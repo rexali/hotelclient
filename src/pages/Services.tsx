@@ -12,7 +12,7 @@ const Services: React.FC = () => {
     {
       icon: Users,
       title: 'Community Building',
-      description: 'We foster a vibrant student community through organized events, study groups, and social activities that help you make lifelong friendships and connections.',
+      description: 'We foster a vibrant community through organized events, study groups, and social activities that help you make lifelong friendships and connections.',
       image: 'https://images.pexels.com/photos/1595391/pexels-photo-1595391.jpeg'
     },
     {
@@ -36,7 +36,7 @@ const Services: React.FC = () => {
     {
       icon: CreditCard,
       title: 'Flexible Payment Options',
-      description: 'Multiple payment options including installment plans, online payments, bank transfers, and mobile money to make payments convenient for students.',
+      description: 'Multiple payment options including installment plans, online payments, bank transfers, and mobile money to make payments convenient for you.',
       image: 'https://images.pexels.com/photos/4386431/pexels-photo-4386431.jpeg'
     }
   ];
@@ -52,7 +52,7 @@ const Services: React.FC = () => {
     },
     {
       title: 'Document Assistance',
-      description: 'Help with lease agreements, documentation, and legal requirements for international students.'
+      description: 'Help with lease agreements, documentation, and legal requirements for you.'
     },
     {
       title: 'Transportation Services',
@@ -78,7 +78,7 @@ const Services: React.FC = () => {
               Our Services
             </h1>
             <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Comprehensive student housing solutions designed to support your academic journey and enhance your living experience.
+              Comprehensive housing solutions designed to support your academic journey and enhance your living experience.
             </p>
           </div>
         </div>
@@ -92,7 +92,7 @@ const Services: React.FC = () => {
               What We Offer
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              From finding your perfect room to ongoing support throughout your stay, we provide comprehensive services to make your student housing experience exceptional.
+              From finding your perfect room to ongoing support throughout your stay, we provide comprehensive services to make your housing experience exceptional.
             </p>
           </div>
 
@@ -138,7 +138,7 @@ const Services: React.FC = () => {
               Additional Services
             </h2>
             <p className="text-lg text-gray-600">
-              Extra features and services to enhance your student living experience
+              Extra features and services to enhance your living experience
             </p>
           </div>
           
@@ -216,7 +216,7 @@ const Services: React.FC = () => {
               Ready to Get Started?
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Our team is ready to help you find the perfect student accommodation. Contact us today to begin your housing journey.
+              Our team is ready to help you find the perfect accommodation. Contact us today to begin your housing journey.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a

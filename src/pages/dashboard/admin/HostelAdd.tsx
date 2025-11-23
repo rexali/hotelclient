@@ -4,6 +4,7 @@ import Form from "form-data";
 import { addHostelAPI } from './api/addHostelAPI';
 import { Forward } from 'lucide-react';
 import { toast } from 'sonner';
+import { statesLGsInObject } from '../../../data/stateData';
 
 const initialHostel: Hostel = {
     id: 1,
@@ -22,7 +23,7 @@ const initialHostel: Hostel = {
 };
 
 
-export default function HostelAdd({ handleAddHostel, setOpenHostel }: { setOpenHostel: any, handleAddHostel: (hostel: Hostel) => void }) {
+export default function HostelAdd({ setOpenHostel }: { setOpenHostel?: any}) {
     const [hostel, setHostel] = useState<Hostel>(initialHostel);
     const [status, setStatus] = useState<string>();
     const [image, setImage] = useState<any>({
@@ -65,7 +66,7 @@ export default function HostelAdd({ handleAddHostel, setOpenHostel }: { setOpenH
             setStatus("Hostel created");
             toast("Hostel created")
             setHostel(initialHostel);
-            handleAddHostel({ ...hostelData });
+            // handleAddHostel({ ...hostelData });
             setOpenHostel(false)
         } else {
             toast("Hostel creation failed");
@@ -132,27 +133,41 @@ export default function HostelAdd({ handleAddHostel, setOpenHostel }: { setOpenH
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Local Govt</label>
-                    <input
-                        name="localGovt"
-                        value={hostel.localGovt}
-                        onChange={handleChange}
+                    <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-2">
+                        State
+                    </label>
+                    <select
+                        id="state"
+                        name="state"
                         required
-                        placeholder='e.g., Kumbotso LG'
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                        value={hostel.state}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="">Select State</option>
+                        {Object.keys(statesLGsInObject)?.map((state: any) => (
+                            <option key={state} value={state}>{state}</option>
+                        ))}
+                    </select>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
-                    <input
-                        name="state"
-                        value={hostel.state}
-                        onChange={handleChange}
+                    <label htmlFor="localGovt" className="block text-sm font-medium text-gray-700 mb-2">
+                        Local Government
+                    </label>
+                    <select
+                        id="localGovt"
+                        name="localGovt"
                         required
-                        placeholder='e.g., Kano'
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                        value={hostel.localGovt}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="">Select LG</option>
+                        {(statesLGsInObject[hostel.state])?.map((LG: any) => (
+                            <option key={LG} value={LG}>{LG}</option>
+                        ))}
+                    </select>
                 </div>
 
                 <div>
@@ -183,7 +198,7 @@ export default function HostelAdd({ handleAddHostel, setOpenHostel }: { setOpenH
                     <input
                         name="photo"
                         type='file'
-                        onChange={(e: any) => setImage((prev: any) => ({ ...prev, filenames: prev.photo+";"+ e.target.files[0].name, photo: e.target.files[0] }))}
+                        onChange={(e: any) => setImage((prev: any) => ({ ...prev, filenames: prev.photo + ";" + e.target.files[0].name, photo: e.target.files[0] }))}
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         formEncType='multipart/form-data'
                     />
@@ -194,7 +209,7 @@ export default function HostelAdd({ handleAddHostel, setOpenHostel }: { setOpenH
                     <input
                         name="document"
                         type='file'
-                        onChange={(e: any) => setImage((prev: any) => ({ ...prev, filenames: prev.document+";"+e.target.files[0].name, document: e.target.files[0] }))}
+                        onChange={(e: any) => setImage((prev: any) => ({ ...prev, filenames: prev.document + ";" + e.target.files[0].name, document: e.target.files[0] }))}
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         formEncType='multipart/form-data'
                     />

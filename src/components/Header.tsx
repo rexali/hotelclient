@@ -28,7 +28,7 @@ const Header: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Building className="h-8 w-8 text-blue-600" />
-            <span className="font-bold text-xl text-gray-900">HostelHub</span>
+            <span className="font-bold text-xl text-gray-900">HotelHub</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -1,38 +1,48 @@
-import React, { useState } from 'react';
-import { Filter, MapPin, DollarSign, SearchIcon } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Filter, MapPin, SearchIcon,Hotel, Timer } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { statesLGsInObject } from '../../data/stateData';
+import { getHotelsByState } from '../../api/getHotelsByNameAPI';
 
 interface SearchFiltersProps {
   showAdvanced?: boolean;
-  newFilter?: any
+  newFilter?: any;
+  getNewFilter?: any;
+  data?: Array<any>;
 }
 
 export interface SearchFilters {
+  checkIn: string;
+  checkOut: string;
+  name: string;
   location: string;
-  minPrice: number;
-  maxPrice: number;
   roomType: string;
   type: string;
   bedrooms: string;
   bathrooms: string;
   amenities: string[];
   availability: boolean;
+  hostelId: string;
 }
 
 const initialFilter = {
+  checkIn: '',
+  checkOut: '',
+  name: '',
   location: '',
-  minPrice: 0,
-  maxPrice: 100000,
   type: '',
   roomType: '',
   bedrooms: '',
   bathrooms: '',
   amenities: [],
-  availability: true
+  availability: true,
+  hotelId: ''
 }
-const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, newFilter = { ...initialFilter } }) => {
+const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, getNewFilter, newFilter = { ...initialFilter } }) => {
   const navigate = useNavigate()
+  const [, setSearchParams] = useSearchParams()
   const [filters, setFilters] = useState<SearchFilters>(newFilter);
+  const [data2, setData2] = useState([]);
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
@@ -54,51 +64,118 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, new
     setFilters(updatedFilters);
   };
 
+  // const handleGetHotelsByState = async (state: string) => {
+  //   let result = await getHotelsByState(state);
+  //   setData2(result?.hotelsNames)
+  // }
+
   const handleAmenityToggle = (amenity: string) => {
     const updatedAmenities = filters.amenities.includes(amenity)
       ? filters.amenities.filter(a => a !== amenity)
       : [...filters.amenities, amenity];
 
     handleFilterChange('amenities', updatedAmenities);
+    setFilters(prev => ({ ...prev, amenities: updatedAmenities }));
+    setSearchParams({ ...filters as any, amenities: updatedAmenities });
+    getNewFilter({ ...filters as any, amenities: updatedAmenities });
   };
+
+  useEffect(() => {
+    (async () => {
+      if (filters.location) {
+        let result = await getHotelsByState(filters?.location);
+        setData2(result?.hostels)
+      }
+    })();
+  }, [filters?.location])
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
       {/* Main Search Bar */}
       <div className="flex flex-col lg:flex-row gap-4 mb-6">
+
         <div className="flex-1 relative">
+          State
           <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <input
-            type="text"
-            placeholder="Enter location..."
+          <select
+            required
             value={filters.location}
-            onChange={(e) => handleFilterChange('location', e.target.value)}
+            onChange={async (e) => {
+              handleFilterChange('location', e.target.value);
+            }}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">Select</option>
+            {Object.keys(statesLGsInObject)?.map((state: string, i: number) => (<option key={i} value={state}>{state}</option>))}
+          </select>
+        </div>
+
+        <div className="flex-1 relative min-w-[120px]">
+          Hotel
+          <Hotel className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 mr-4" />
+          <select
+            required
+            value={filters.name}
+            onChange={(e) => {
+              handleFilterChange('name', e.target.value);
+              let hostel: any = data2?.filter((hostel: any) => hostel?.name.toLowerCase() === e.target.value.toLowerCase())[0];
+              setFilters(prev => ({ ...prev, hostelId: hostel?.id }));
+              setSearchParams({ ...filters as any, name: e.target.value, hostelId: hostel?.id });
+              getNewFilter({ ...filters as any, name: e.target.value, hostelId: hostel?.id });
+            }}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">Select</option>
+            {/* TO DO: dynamically generated hotle names */}
+            {data2?.map((hostel: any, i: number) => (<option key={i} value={hostel.name}>{hostel.name}</option>))}
+          </select>
+        </div>
+
+        <div className="flex-1 relative">
+          Check in
+          <Timer className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <input
+            type="date"
+            placeholder="Check in..."
+            value={filters?.checkIn?.toString()}
+            onChange={(e) => {
+              handleFilterChange('checkIn', e.target.value);
+              setFilters(prev => ({ ...prev, checkIn: e.target.value, }));
+              setSearchParams({ ...filters as any, checkIn: e.target.value });
+              getNewFilter({ ...filters as any, checkIn: e.target.value });
+            }}
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
         <div className="flex gap-4">
           <div className="relative min-w-[120px]">
-            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            Check out
+            <Timer className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <input
-              type="number"
-              placeholder="Min price"
-              value={filters.minPrice || ''}
-              onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value) || 0)}
+              type="date"
+              placeholder="Check out"
+              value={filters?.checkOut?.toString()}
+              onChange={(e) => {
+                handleFilterChange('checkOut', e.target.value || '');
+                setFilters(prev => ({ ...prev, checkOut: e.target.value, }));
+                setSearchParams({ ...filters as any, checkOut: e.target.value });
+                getNewFilter({ ...filters as any, checkOut: e.target.value });
+              }}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
-          <div className="relative min-w-[120px]">
+          {/* <div className="relative min-w-[120px]">
             <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <input
-              type="number"
-              placeholder="Max price"
+              type="text"
+              placeholder="Type"
               value={filters.maxPrice || ''}
               onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value) || 100000)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-          </div>
+          </div> */}
         </div>
 
         <button
@@ -128,7 +205,12 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, new
               </label>
               <select
                 value={filters.roomType}
-                onChange={(e) => handleFilterChange('roomType', e.target.value)}
+                onChange={(e) => {
+                  handleFilterChange('roomType', e.target.value);
+                  setFilters(prev => ({ ...prev, roomType: e.target.value, }));
+                  setSearchParams({ ...filters as any, roomType: e.target.value });
+                  getNewFilter({ ...filters as any, roomType: e.target.value });
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {roomTypes.map(type => (
@@ -145,7 +227,12 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, new
               </label>
               <select
                 value={filters.bedrooms}
-                onChange={(e) => handleFilterChange('bedrooms', e.target.value)}
+                onChange={(e) => {
+                  handleFilterChange('bedrooms', e.target.value);
+                  setFilters(prev => ({ ...prev, bedrooms: e.target.value }));
+                  setSearchParams({ ...filters as any, bedrooms: e.target.value });
+                  getNewFilter({ ...filters as any, bedrooms: e.target.value });
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Any</option>
@@ -160,7 +247,12 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, new
               </label>
               <select
                 value={filters.bathrooms}
-                onChange={(e) => handleFilterChange('bathrooms', e.target.value)}
+                onChange={(e) => {
+                  handleFilterChange('bathrooms', e.target.value);
+                  setFilters(prev => ({ ...prev, bathrooms: e.target.value, }));
+                  setSearchParams({ ...filters as any, bathrooms: e.target.value });
+                  getNewFilter({ ...filters as any, bathrooms: e.target.value });
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Any</option>
@@ -187,7 +279,9 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ showAdvanced = false, new
                   <input
                     type="checkbox"
                     checked={filters.amenities.includes(amenity)}
-                    onChange={() => handleAmenityToggle(amenity)}
+                    onChange={() => {
+                      handleAmenityToggle(amenity);
+                    }}
                     className="hidden"
                   />
                   <span className="text-sm">{amenity}</span>

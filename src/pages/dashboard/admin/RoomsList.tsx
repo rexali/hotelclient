@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Room } from '../../../types';
-import { Delete, Edit, View } from 'lucide-react';
+import { Delete,Eye, Pencil} from 'lucide-react';
 import RoomEdit from './RoomEdit';
 import { Link } from 'react-router-dom';
 import { removeRoomAPI } from '../../../api/rooms/removeRoomAPI';
@@ -59,9 +59,21 @@ export function RoomsList({ initialRooms = [] }: RoomsTabProps) {
                                 <td className="border px-4 py-2">{room.type}</td>
                                 <td className="border px-4 py-2">{room.price}</td>
                                 <td className="border px-4 py-2">{room.location}</td>
-                                <td className="border px-4 py-2"><Link to={"/rooms/" + room.id} target='parent'><View /></Link></td>
-                                <td className="border px-4 py-2"><button onClick={() => handleEditRoom(room.id, true)}><Edit /></button></td>
-                                <td className="border px-4 py-2"><button onClick={() => handleRemoveRoom(room.id)}><Delete /></button></td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div className="flex space-x-3">
+                                        <button className="text-blue-600 hover:text-blue-900">
+                                            <Link to={"/rooms/" + room.id}  target='_blank'>
+                                                <Eye className="h-4 w-4" />
+                                            </Link>
+                                        </button>
+                                        <button className="text-red-600 hover:text-red-900">
+                                            <Pencil className="h-4 w-4" onClick={() => handleEditRoom(room.id, true)} />
+                                        </button>
+                                        <button className="text-red-600 hover:text-red-900">
+                                            <Delete className="h-4 w-4" onClick={() => handleRemoveRoom(room.id)} />
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         ))
                     }

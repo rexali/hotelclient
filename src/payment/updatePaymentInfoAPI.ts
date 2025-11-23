@@ -2,25 +2,26 @@
 import { config } from "../config/config";
 import { ResponseType } from "../types";
 
-export async function postPaymentInfoAPI(data: {
-    RoomId: string,
-    UserId: string,
-    checkIn: string,
-    checkOut: string,
-    totalPrice: number,
+export async function updatePaymentInfoAPI(data: {
+    BookingId:string
+    RoomId?: string,
+    UserId?: string,
+    checkIn?: string,
+    checkOut?: string,
+    totalPrice?: number,
     status: string,
     paymentStatus: string
 }) {
     try {
         const _csrf = window.localStorage.getItem('csrf') as string;
 
-        const roomResponse = await fetch(config.BASE_URL_LOCAL + "/api/v1/bookings", {
-            method: 'POST',
+        const roomResponse = await fetch(config.BASE_URL_LOCAL + "/api/v1/bookings/"+data.BookingId, {
+            method: 'PATCH',
             body: JSON.stringify(data),
             credentials: 'include',
             headers: {
+                "XSRF-TOKEN": _csrf,
                 'Content-Type': 'application/json',
-                "X-XSRF-TOKEN": _csrf
             },
         });
 
@@ -29,13 +30,13 @@ export async function postPaymentInfoAPI(data: {
 
         if (result.status === 'success') {
 
-            return { status: true, data: result.data }
+            return true;
         }
 
-        return { status: false, data: null }
+        return false;
     } catch (error) {
         console.log(error);
-        return { status: false, data: null }
+        return false;
     }
 
 

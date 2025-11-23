@@ -11,10 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { handleViewLocation } from "../../utils/handleViewLocation";
 import { handleShare } from "../../utils/handleShare";
 import { handleContact } from "../../utils/handlePhoneCall";
+import { BASE_URL_LOCAL } from "../../constants/constants";
 
-const HostelDetails: React.FC = () => {
+const HotelDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [hostel, setHostel] = useState<any>({});
+    const [hotel, setHotel] = useState<any>({});
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -36,9 +37,8 @@ const HostelDetails: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            let { hostel } = await getHostelAPI(id as unknown as number);
-            console.log(hostel);
-            setHostel(hostel);
+            let { hotel } = await getHostelAPI(id as unknown as number);
+            setHotel(hotel);
         })();
     }, [id]);
 
@@ -46,17 +46,17 @@ const HostelDetails: React.FC = () => {
     const Hero = () => (
         <section className="relative bg-blue-700 text-white py-16 px-4 rounded-b-3xl shadow-lg mb-8">
             <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-8">
-                {hostel?.photo && (
-                    <img crossOrigin='use-credentials' src={hostel?.photo} alt={hostel?.name} className="w-56 h-56 object-cover rounded-2xl shadow-lg border-4 border-white" />
+                {hotel?.photo && (
+                    <img crossOrigin='use-credentials' src={BASE_URL_LOCAL+"/uploads/"+hotel?.photo} alt={hotel?.name} className="w-56 h-56 object-cover rounded-2xl shadow-lg border-4 border-white" />
                 )}
                 <div className="flex-1">
-                    <h1 className="text-4xl font-extrabold mb-2">{hostel?.name}</h1>
-                    <p className="text-lg mb-4">{hostel?.description}</p>
+                    <h1 className="text-4xl font-extrabold mb-2">{hotel?.name}</h1>
+                    <p className="text-lg mb-4">{hotel?.description}</p>
                     <div className="flex flex-wrap gap-4 text-base">
-                        <span><strong>Address:</strong> {hostel?.address}, {hostel?.localGovt}, {hostel?.state}, {hostel?.country}</span>
-                        <span><strong>Email:</strong> {hostel?.email}</span>
-                        <span><strong>Phone:</strong> {hostel?.phone}</span>
-                        <span><strong>Featured:</strong> {hostel?.featured ? 'Yes' : 'No'}</span>
+                        <span><strong>Address:</strong> {hotel?.address}, {hotel?.localGovt}, {hotel?.state}, {hotel?.country}</span>
+                        <span><strong>Email:</strong> {hotel?.email}</span>
+                        <span><strong>Phone:</strong> {hotel?.phone}</span>
+                        <span><strong>Featured:</strong> {hotel?.featured ? 'Yes' : 'No'}</span>
                     </div>
                 </div>
             </div>
@@ -91,14 +91,14 @@ const HostelDetails: React.FC = () => {
 
             {/* Results */}
 
-            {hostel.Rooms?.length > 0 ? (
+            {hotel?.Rooms?.length > 0 ? (
                 <div>
                     <div className={
                         viewMode === 'grid'
                             ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
                             : 'space-y-6'
                     }>
-                        {hostel?.Rooms.map((room: any) => (
+                        {hotel?.Rooms.map((room: any) => (
                             <RoomCard
                                 key={room.id}
                                 room={room}
@@ -124,4 +124,4 @@ const HostelDetails: React.FC = () => {
             }
         </div>)
 }
-export default HostelDetails;
+export default HotelDetails;

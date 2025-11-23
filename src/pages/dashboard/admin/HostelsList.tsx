@@ -21,11 +21,6 @@ export function HostelsList({ initialHostels = [] }: HostelsTabProps) {
     const [add, setAdd] = useState<Boolean>(false);
 
 
-    const handleAddHostel = (hostel: Hostel) => {
-        setHostels(prev => [...prev,{...hostel}]);
-        setAdd(false);
-    };
-
     const handleEditHostel = (hostelId: number | undefined, edit: boolean) => {
         setHostelId(hostelId);
         setEdit(edit)
@@ -56,7 +51,7 @@ export function HostelsList({ initialHostels = [] }: HostelsTabProps) {
     }
 
      if (add) {
-        return <HostelAdd handleAddHostel={handleAddHostel} setOpenHostel={setAdd} />
+        return <HostelAdd setOpenHostel={setAdd} />
     }
 
 
@@ -81,9 +76,9 @@ export function HostelsList({ initialHostels = [] }: HostelsTabProps) {
                                 <td className="border px-4 py-2">{hostel.email}</td>
                                 <td className="border px-4 py-2">{hostel.state}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div className="flex space-x-2">
+                                    <div className="flex space-x-3">
                                         <button className="text-blue-600 hover:text-blue-900">
-                                            <Link to={"/hostels/" + hostel?.id}  target='parent'>
+                                            <Link to={"/hotels/" + hostel?.id}  target='_blank'>
                                                 <Eye className="h-4 w-4" />
                                             </Link>
                                         </button>

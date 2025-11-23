@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 export const FavouriteRooms = ({ favourites = [] }: { favourites: any }) => {
 
-  
+
     return (<div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="w-full">
             <thead className="bg-gray-50">
@@ -27,19 +27,20 @@ export const FavouriteRooms = ({ favourites = [] }: { favourites: any }) => {
                 </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-                {favourites?.map((item: any) => item.Room)?.map((room: any,i:any) => (
+                {favourites?.map((item: any) => item.Room)?.map((room: any, i: any) => (
                     <tr key={i}>
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
-                                <img
+                                {room?.photo?.length && <img
                                     className="h-10 w-10 rounded-full"
-                                    src={room?.photo?.length ? BASE_URL_LOCAL + "/uploads/" + room?.photo[0] : 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1'}
+                                    src={BASE_URL_LOCAL + "/uploads/" + room?.photo[0]}
                                     alt={room?.name}
                                     width={10}
                                     height={10}
                                     style={{ margin: 2, display: "inline-block" }}
                                     crossOrigin=""
                                 />
+                                }
                                 <div className="ml-4">
                                     <div className="text-sm font-medium text-gray-900">{room?.name}</div>
                                 </div>

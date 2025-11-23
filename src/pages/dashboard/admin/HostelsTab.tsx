@@ -16,12 +16,6 @@ export function HostelsTab() {
     const handleSetKey = () => {
         setKey(prev => prev + 1);
     }
-    
-    const handleAddHostel = (room: Hostel) => {
-        setHostels((prev: any) => [...prev, {...room}]);
-        setOpen(false);
-    };
-
 
     const handleSetOpen=(val:boolean)=>{
           setOpen(val);
@@ -40,7 +34,7 @@ export function HostelsTab() {
         return (
             <div>
                 <h3>New Hostel</h3>
-                <HostelAdd handleAddHostel={handleAddHostel} setOpenHostel={handleSetOpen} />
+                <HostelAdd setOpenHostel={handleSetOpen} />
             </div>
         )
     }

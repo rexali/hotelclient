@@ -78,7 +78,7 @@ export default function HostelEdit({ hostelId, setEdit }: { hostelId: number, se
     React.useEffect(() => {
         (async () => {
             let result = await getHostelAPI(hostelId);
-            setHostel(result.hostel);
+            setHostel(result.hotel);
         })();
     }, [])
 

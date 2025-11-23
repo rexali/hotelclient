@@ -13,11 +13,11 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-2">
               <Building className="h-8 w-8 text-blue-400" />
-              <span className="font-bold text-xl">HostelHub</span>
+              <span className="font-bold text-xl">HotelHub</span>
             </Link>
             <p className="text-gray-300 text-sm leading-relaxed">
               Your trusted partner for premium student accommodation. We provide safe, 
-              comfortable, and affordable housing solutions for students across Nigeria.
+              comfortable, and affordable housing solutions for you and others across Nigeria.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors duration-200">
@@ -110,7 +110,7 @@ const Footer: React.FC = () => {
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">info@hostelhub.com</span>
+                <span className="text-gray-300 text-sm">info@hotelhub.com</span>
               </li>
             </ul>
           </div>
@@ -119,7 +119,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {currentYear} HostelHub. All rights reserved.
+              © {currentYear} HotelHub. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">

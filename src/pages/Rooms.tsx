@@ -13,48 +13,60 @@ import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { handleViewLocation } from '../utils/handleViewLocation';
 import Pagination from '../components/common/Pagination';
 import { handleContact } from '../utils/handlePhoneCall';
+import { getSearchedRoomAPI } from './api/getSearchedRoomsAPI';
 
 
-const initialFilter = {
-  location: '',
-  minPrice: 0,
-  maxPrice: 100000,
-  roomType: '',
-  type: '',
-  bedrooms: '',
-  bathrooms: '',
-  amenities: [],
-  availability: true,    //'available'
-}
 const Rooms: React.FC = () => {
+
+  const initialFilter = {
+    location: '',
+    checkIn: '',
+    checkOut: '',
+    name: '',
+    roomType: '',
+    type: '',
+    bedrooms: 0,
+    bathrooms: 0,
+    amenities: [],
+    availability: true,    //'available'
+    hostelId: ''
+  }
 
   const { user } = useAuth();
   const navigate = useNavigate()
   const [searchParams, _] = useSearchParams();
+
+  const [rooms, setRooms] = useState<Array<Room>>([]);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+
   const featured = Boolean(searchParams.get('featured'));
   const popular = Boolean(searchParams.get('popular'));
   const recommended = Boolean(searchParams.get('recommended'));
   const recent = Boolean(searchParams.get('recent'));
   const booked = Boolean(searchParams.get('booked'));
-  const type = searchParams.get('type');
-  const [rooms, setRooms] = useState<Array<Room>>([]);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [filter, setFilters] = useState<SearchFiltersType>({ ...initialFilter });
+  const typez = searchParams.get('typez');
 
-  useEffect(() => {
-    (async () => {
-      let data = await getRoomsAPI(currentPage);
-      setTotalPages(100)
-      setRooms(data?.rooms);
-    })();
+  let _filters = {
+    location: searchParams.get("location") as string,
+    checkIn: searchParams.get("checkIn") as string,
+    checkOut: searchParams.get("checkOut") as string,
+    name: searchParams.get("name") as string,
+    roomType: searchParams.get("roomType") as string,
+    type: searchParams.get("type") as string,
+    bedrooms: Number(searchParams.get("bedrooms") ?? 0),
+    bathrooms: Number(searchParams.get("bathrooms") ?? 0),
+    amenities: searchParams.get("amenities") as unknown as Array<string>,
+    availability: Boolean(searchParams.get("availability")) ?? true,
+    hostelId: searchParams.get("hostelId") as string
+  };
 
-  }, [currentPage])
+  const [filters, setFilters] = useState({ ..._filters });
 
   const handleAddFavourite = async (roomId: any) => {
-    if (user.userId) {
-      let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+    if (user?.userId) {
+      let result = await addFavouriteRoomAPI({ roomId, userId: user.userId });
       if (result) {
         toast(result)
       }
@@ -67,8 +79,42 @@ const Rooms: React.FC = () => {
 
   const handlePayment = async (roomId: any, roomPrice: any) => {
     // Redirect to payment page or open payment modal
-    await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
+    if (user?.userId) {
+      await makePaymentAPI({ roomId, userId: user.userId, amount: roomPrice, email: user.email });
+    }  else {
+    // Redirect to login or show login modal
+      navigate("/auth")
+    }
   };
+
+
+  useEffect(() => {
+    (async () => {
+      if (filters?.hostelId) {
+        let data = await getSearchedRoomAPI({ page: currentPage, ...filters });
+        setRooms(data?.rooms);
+        setTotalPages(data?.roomCount)
+      } else {
+        let data = await getRoomsAPI(currentPage);
+        setTotalPages(data?.roomCount)
+        setRooms(data?.rooms)
+      }
+    })();
+
+  }, [
+    currentPage,
+    filters.name,
+    filters.location,
+    filters.hostelId,
+    filters.checkIn,
+    filters.checkOut,
+    filters.roomType,
+    filters.bathrooms,
+    filters.bathrooms,
+    filters.amenities
+  ]);
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -79,18 +125,18 @@ const Rooms: React.FC = () => {
             Browse Rooms
           </h1>
           <p className="text-lg text-gray-600">
-            Find the perfect accommodation for your student life
+            Find the perfect accommodation for your lifestyle
           </p>
         </div>
 
         {/* Search Filters */}
-        <SearchFilters showAdvanced={false} newFilter={filter} />
+        <SearchFilters showAdvanced={false} getNewFilter={setFilters} newFilter={filters} />
 
         {/* Results Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              {!type ? rooms?.length : rooms.filter(r => r.type === type).length} rooms found
+              {!typez ? rooms?.length : rooms?.filter(r => r.type === typez)?.length} rooms found
             </h2>
             <p className="text-sm text-gray-600">
               Showing results based on your search criteria
@@ -129,7 +175,7 @@ const Rooms: React.FC = () => {
                 : 'space-y-6'
             }>
               {
-                featured ? rooms.filter(room => room.featured === true).map((room) => (
+                featured ? rooms?.filter(room => room.featured === true).map((room) => (
                   <RoomCard
                     key={room.id}
                     room={room}
@@ -141,7 +187,7 @@ const Rooms: React.FC = () => {
                     isFavorite={user?.favorites?.includes(room.id)}
                   />
                 ))
-                  : popular ? rooms.map((room) => (
+                  : popular ? rooms?.map((room) => (
                     <RoomCard
                       key={room.name}
                       room={room}
@@ -153,7 +199,7 @@ const Rooms: React.FC = () => {
                       isFavorite={user?.favorites?.includes(room.id)}
                     />
                   ))
-                    : recommended ? rooms.map((room) => (
+                    : recommended ? rooms?.map((room) => (
                       <RoomCard
                         key={room.name}
                         room={room}
@@ -165,7 +211,7 @@ const Rooms: React.FC = () => {
                         isFavorite={user?.favorites?.includes(room.id)}
                       />
                     ))
-                      : recent ? rooms.map((room) => (
+                      : recent ? rooms?.map((room) => (
                         <RoomCard
                           key={room.name}
                           room={room}
@@ -177,7 +223,7 @@ const Rooms: React.FC = () => {
                           isFavorite={user?.favorites?.includes(room.id)}
                         />
                       ))
-                        : booked ? rooms.map((room) => (
+                        : booked ? rooms?.map((room) => (
                           <RoomCard
                             key={room.name}
                             room={room}
@@ -189,7 +235,7 @@ const Rooms: React.FC = () => {
                             isFavorite={user?.favorites?.includes(room.id)}
                           />
                         ))
-                          : type ? rooms?.filter(rm => rm.type === type)?.map((room) => (
+                          : typez ? rooms?.filter(rm => rm.type === typez)?.map((room) => (
                             <RoomCard
                               key={room.name}
                               room={room}
@@ -200,21 +246,19 @@ const Rooms: React.FC = () => {
                               onPayment={handlePayment}
                               isFavorite={user?.favorites?.includes(room.id)}
                             />
-                          )) : rooms.map((room) => (
-                            <RoomCard
-                              key={room.name}
-                              room={room}
-                              onFavorite={handleAddFavourite}
-                              onShare={handleShare}
-                              onContact={handleContact}
-                              onViewLocation={handleViewLocation}
-                              onPayment={handlePayment}
-                              isFavorite={user?.favorites?.includes(room.id)}
-                            />))
-              }
-
+                          ))
+                            : rooms?.map((room) => (
+                              <RoomCard
+                                key={room.name}
+                                room={room}
+                                onFavorite={handleAddFavourite}
+                                onShare={handleShare}
+                                onContact={handleContact}
+                                onViewLocation={handleViewLocation}
+                                onPayment={handlePayment}
+                                isFavorite={user?.favorites?.includes(room.id)}
+                              />))}
             </div>
-
           </div>
         )
           : (
@@ -230,15 +274,7 @@ const Rooms: React.FC = () => {
               </p>
               <button
                 onClick={() => setFilters({
-                  location: '',
-                  minPrice: 0,
-                  maxPrice: 100000,
-                  roomType: '',
-                  type: '',
-                  bedrooms: '',
-                  bathrooms: '',
-                  amenities: [],
-                  availability: true
+                  ...initialFilter
                 })}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >

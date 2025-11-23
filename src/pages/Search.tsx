@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, List } from 'lucide-react';
 import SearchFilters from '../components/common/SearchFilters';
 import { Room } from '../types';
@@ -12,53 +12,78 @@ import { addFavouriteRoomAPI } from './api/addFavouriteRoomAPI';
 import { toast } from 'sonner';
 import { handleViewLocation } from '../utils/handleViewLocation';
 import Pagination from '../components/common/Pagination';
+import { getRoomsAPI } from './api/getRoomsAPI';
 
-
-const initialFilter = {
-  location: '',
-  minPrice: 0,
-  maxPrice: 100000,
-  type: '',
-  roomType: '',
-  bedrooms: '',
-  bathrooms: '',
-  amenities: [],
-  availability: true
-}
 
 const Searchs: React.FC = () => {
+
+  const initialFilter = {
+    checkIn: '',
+    checkOut: '',
+    name: '',
+    location: '',
+    roomType: '',
+    type: '',
+    bedrooms: 0,
+    bathrooms: 0,
+    amenities: [],
+    availability: true,
+    hostelId: ''
+  };
+
   const { user } = useAuth();
   const [searchParams, _] = useSearchParams();
-  const params = searchParams;
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [filters, setFilters]=useState<any>(initialFilter);
+  const [totalPages, setTotalPages] = useState<number>(0);
 
-  let newFilters = {
-    location: params.get("location") as string,
-    minPrice: Number(params.get("minPrice") ?? 0),
-    maxPrice: Number(params.get("maxPrice") ?? 100000),
-    roomType: params.get("roomType") as string,
-    type: params.get("type") as string,
-    bedrooms: Number(params.get("bedrooms") ?? 0),
-    bathrooms: Number(params.get("bathrooms") ?? 0),
-    amenities: params.get("amenities") as unknown  as Array<string>,
-    availability: Boolean(params.get("availability")) ?? true,
-  }
 
+  let _filters = {
+    location: searchParams.get("location") as string,
+    checkIn: searchParams.get("checkIn") as string,
+    checkOut: searchParams.get("checkOut") as string,
+    name: searchParams.get("name") as string,
+    roomType: searchParams.get("roomType") as string,
+    type: searchParams.get("type") as string,
+    bedrooms: Number(searchParams.get("bedrooms") ?? 0),
+    bathrooms: Number(searchParams.get("bathrooms") ?? 0),
+    amenities: searchParams.get("amenities") as unknown as Array<string>,
+    availability: Boolean(searchParams.get("availability")) ?? true,
+    hostelId: searchParams.get("hostelId") as string
+  };
+
+  const [filters, setFilters] = useState({ ..._filters });
 
   useEffect(() => {
     (async () => {
-      let data = await getSearchedRoomAPI({ page: currentPage, ...newFilters });
-      setRooms(data);
+      if (filters?.hostelId) {
+        let data = await getSearchedRoomAPI({ page: currentPage, ...filters });
+        setRooms(data?.rooms);
+      } else {
+        let data = await getRoomsAPI(currentPage)
+        setRooms(data?.rooms)
+        setTotalPages(data?.roomCount);
+      }
     })();
 
-  }, [currentPage])
+  }, [
+    currentPage,
+    filters.name,
+    filters.location,
+    filters.hostelId,
+    filters.checkIn,
+    filters.checkOut,
+    filters.roomType,
+    filters.bathrooms,
+    filters.bathrooms,
+    filters.amenities
+  ]);
+
 
   const handleAddFavourite = async (roomId: any) => {
-    if (user.userId) {
+    if (user?.userId) {
       let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
       if (result) {
         toast(result)
@@ -89,12 +114,12 @@ const Searchs: React.FC = () => {
             Browse Searchs
           </h1>
           <p className="text-lg text-gray-600">
-            Find the perfect accommodation for your student life
+            Find the perfect accommodation for your lifestyle
           </p>
         </div>
 
         {/* Search Filters */}
-        <SearchFilters showAdvanced={false} newFilter={filters} />
+        <SearchFilters showAdvanced={false} getNewFilter={setFilters} newFilter={filters} />
 
         {/* Results Header */}
         <div className="flex justify-between items-center mb-6">
@@ -137,7 +162,7 @@ const Searchs: React.FC = () => {
                 ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
                 : 'space-y-6'
             }>
-              {rooms.map((room) => (
+              {rooms?.map((room) => (
                 <RoomCard
                   key={room.id}
                   room={room}
@@ -164,7 +189,7 @@ const Searchs: React.FC = () => {
                 Try adjusting your search filters or browse all available rooms.
               </p>
               <button
-                onClick={() => setFilters({ ...initialFilter})}
+                onClick={() => setFilters({ ...initialFilter })}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 Clear Filters
@@ -174,7 +199,7 @@ const Searchs: React.FC = () => {
           </div>
         )}
       </div>
-      <Pagination currentPage={currentPage} totalPages={10} onPageChange={setCurrentPage} /><br />
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} /><br />
     </div>
   );
 };

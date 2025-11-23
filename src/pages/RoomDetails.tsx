@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
 import { handleContact } from '../utils/handlePhoneCall';
+import { makePaymentWithPopupAPI } from '../payment/makePaymentWithPopupAPI';
 
 const RoomDetails: React.FC = () => {
   // If using react-router-dom v6+
@@ -22,7 +23,7 @@ const RoomDetails: React.FC = () => {
   
 const handleAddFavourite = async (roomId: any) => {
     if (user.userId) {
-      let result = await addFavouriteRoomAPI({ roomId, userId: user.id });
+      let result = await addFavouriteRoomAPI({ roomId, userId: user?.userId });
       if (result) {
         toast(result)
       }
@@ -35,12 +36,14 @@ const handleAddFavourite = async (roomId: any) => {
 
   const handlePayment = async (roomId: any, roomPrice: any) => {
     // Redirect to payment page or open payment modal
-    await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
+    // await makePaymentAPI({ roomId, userId: user.userId, amount: roomPrice, email: user.email });
+    await makePaymentWithPopupAPI({ roomId, userId: user.userId, amount: roomPrice, email: user.email });
   };
+
 
   useEffect(() => {
     (async () => {
-      let room = await getRoomAPI(id as unknown as number);
+      let room = await getRoomAPI(id as unknown as number);      
       setData(room);
     })();
   }, [id])
@@ -68,7 +71,7 @@ const handleAddFavourite = async (roomId: any) => {
         onShare={handleShare}
         onViewLocation={handleViewLocation }
         onContact={handleContact}
-        // isFavorite
+        isFavorite={room?.likes?.includes(user?.userId)}
       /><br />
       {room?.Reviews && <ReviewList reviews={[...room?.Reviews]} />}<br />
       {/* TO Do: Check if user signin and booked it */}

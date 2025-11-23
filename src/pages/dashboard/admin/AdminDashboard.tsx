@@ -31,6 +31,7 @@ export const AdminDashboard = () => {
 
 
   const renderTabContent = () => {
+    
     switch (activeTab) {
       case 'profile':
         return <ProfileTab />

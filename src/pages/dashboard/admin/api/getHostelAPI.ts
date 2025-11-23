@@ -18,7 +18,7 @@ export async function getHostelAPI(id: number) {
         const data = await response.json() as ResponseType;
         return {
             success: data.status === 'success' ? true : false,
-            hostel: data?.data?.hostel,
+            hotel: data?.data?.hostel,
         };
     } catch (error: any) {
         return {

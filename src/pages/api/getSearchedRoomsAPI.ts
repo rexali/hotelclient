@@ -2,19 +2,49 @@
 import { config } from "../../config/config";
 import { ResponseType } from "../../types";
 
-type Query = {
+export type SearchQuery = {
     page: number;
     location: string;
     minPrice: number;
     maxPrice: number;
+    checkIn?: string;
+    checkOut?: string;
     type: string;
     roomType: string;
     bedrooms: number;
     bathrooms: number;
     amenities: Array<string>;
     availability: boolean;
+    hotelId: string
 }
+
 export const getSearchedRoomAPI = async function getSearchedRoomAPI(query: any) {
+    let params = new URLSearchParams(query).toString();
+    try {
+        const response = await fetch(config.BASE_URL_LOCAL + "/search?" + params, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "GET",
+            credentials: 'include'
+        });
+
+        const result = await response.json() as ResponseType;
+        if (result.status === 'success') {
+
+            return result.data;
+        }
+
+    } catch (error) {
+        console.warn(error);
+
+    }
+}
+
+
+
+
+export const getSearchedRoomsAPI2 = async function getSearchedRoomsAPI2(query: any) {
     let params = new URLSearchParams(query).toString();
     try {
         const response = await fetch(config.BASE_URL_LOCAL + "/search?" + params, {
