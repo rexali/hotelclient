@@ -11,12 +11,14 @@ import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
 import { handleContact } from '../utils/handlePhoneCall';
+import { getRooms } from '../mocks';
 
 const Home: React.FC = () => {
   const { user } = useAuth()
   const moutRef = useRef(true);
   const [data, setData] = useState<any>({});
   const navigate = useNavigate();
+  let roms = getRooms();
 
   const handlePayment = async (roomId: any, roomPrice: any) => {
     await makePaymentAPI({ roomId, userId: user?.userId, amount: roomPrice, email: user.email });
@@ -52,7 +54,7 @@ const Home: React.FC = () => {
       moutRef.current = false
     }
   })
-  
+
 
   const roomCategories = [
     {
@@ -203,7 +205,7 @@ const Home: React.FC = () => {
               Use our advanced search filters to find accommodation that perfectly matches your needs and budget.
             </p>
           </div>
-          <SearchFilters  />
+          <SearchFilters />
         </div>
       </section>
 
@@ -281,7 +283,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Featured Rooms */}
-      {data?.featuredRooms?.length > 0 && (
+      {data?.featuredRooms?.length > 0 ? (
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-12">
@@ -302,7 +304,7 @@ const Home: React.FC = () => {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {data?.featuredRooms.slice(0, 3).map((room: any) => (
+              {(data?.featuredRooms.slice(0, 3)).map((room: any) => (
                 <RoomCard
                   key={room.id}
                   room={room}
@@ -317,7 +319,42 @@ const Home: React.FC = () => {
             </div>
           </div>
         </section>
-      )}
+      ) : (<section className="py-16 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center mb-12">
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                    Featured Rooms
+                  </h2>
+                  <p className="text-lg text-gray-600">
+                    Handpicked premium accommodations
+                  </p>
+                </div>
+                <Link
+                  to="/rooms?featured=true"
+                  className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  View All
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {roms.slice(0, 3).map((room: any) => (<RoomCard
+                  key={room.id}
+                  room={room}
+                  onViewLocation={handleViewLocation}
+                  onShare={handleShare}
+                  onPayment={handlePayment}
+                  onFavorite={handleAddFavourite}
+                  onContact={handleContact}
+                  isFavorite={room?.likes?.includes(user?.userId)} />
+                ))}
+
+              </div>
+            </div>
+          </section>)
+
+      }
 
       {/* Popular Rooms */}
       {data?.popularRooms?.length > 0 && (

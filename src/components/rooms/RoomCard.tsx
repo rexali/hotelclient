@@ -4,6 +4,7 @@ import { Room } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { BASE_URL_LOCAL } from '../../constants/constants';
 import { Link } from 'react-router-dom';
+import Image from '../common/Image';
 
 interface RoomCardProps {
   room: any;
@@ -34,7 +35,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
     roomPrice: 0,
     userId: user?.userId
   });
-   
+
   const photos = [
     'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg',
     'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg'
@@ -67,7 +68,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
     setCheckInCheckOutForm(false);
     await handleContineCheckOut(checkInCheckOutData.roomId, checkInCheckOutData.roomPrice);
     setTimeout(() => {
-      setCheckInCheckOutData(prev=>({
+      setCheckInCheckOutData(prev => ({
         ...prev,
         roomPrice: 0,
         checkIn: '',
@@ -101,11 +102,16 @@ const RoomCard: React.FC<RoomCardProps> = ({
       <div className="relative h-48 overflow-hidden">
         {room?.photos?.length ? (
           <Link to={'/rooms/' + room.id}>
-            <img
+            {/* <img
               src={BASE_URL_LOCAL + "/uploads/" + room?.photos[0]}
               alt={room?.name}
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               crossOrigin='use-credentials'
+            /> */}
+            <Image
+              src={BASE_URL_LOCAL + '/uploads/' + room.photos[0]}
+              defaultSrc={undefined}
+              alt={room.name}
             />
           </Link>
         ) : (
