@@ -43,7 +43,6 @@ const Rooms: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [loading, setLoading] = useState<Boolean>(false);
 
-
   const featured = Boolean(searchParams.get('featured'));
   const popular = Boolean(searchParams.get('popular'));
   const recommended = Boolean(searchParams.get('recommended'));

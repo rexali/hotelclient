@@ -38,6 +38,7 @@ const Searchs: React.FC = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [loading, setLoading] = useState<Boolean>(false);
 
 
   let _filters = {
@@ -55,16 +56,36 @@ const Searchs: React.FC = () => {
   };
 
   const [filters, setFilters] = useState({ ..._filters });
+  const itemsPerPage = 10;
 
   useEffect(() => {
     (async () => {
       if (filters?.hostelId) {
-        let data = await getSearchedRoomAPI({ page: currentPage, ...filters });
-        setRooms(data?.rooms);
+        try {
+
+          setLoading(true)
+          let data = await getSearchedRoomAPI({ page: currentPage, ...filters });
+          setRooms(data?.rooms);
+          setTotalPages(Math.ceil(data?.roomCount ?? 1) / itemsPerPage);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false)
+        }
+
       } else {
-        let data = await getRoomsAPI(currentPage)
-        setRooms(data?.rooms)
-        setTotalPages(data?.roomCount);
+
+        try {
+          setLoading(true);
+          let data = await getRoomsAPI(currentPage)
+          setRooms(data?.rooms)
+          setTotalPages(Math.ceil(data?.roomCount ?? 1) / itemsPerPage);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false)
+        }
+
       }
     })();
 
@@ -104,6 +125,16 @@ const Searchs: React.FC = () => {
     // Redirect to payment page or open payment modal
     await makePaymentAPI({ roomId, userId: user.id, amount: roomPrice, email: user.email });
   };
+
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-50">
