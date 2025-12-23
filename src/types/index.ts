@@ -26,7 +26,7 @@ export interface Hostel {
 }
 
 export interface Room {
-  id: string;
+  id: number;
   name: string;
   type: 'single' | 'double' | 'triple' | 'dormitory';
   price: number;
@@ -46,7 +46,7 @@ export interface Room {
 
 export interface User {
   fullName: string;
-  id: string;
+  id: number;
   name: string;
   email: string;
   phone: string;
@@ -61,9 +61,9 @@ export interface User {
 }
 
 export interface Booking {
-  id: string;
-  userId: string;
-  roomId: string;
+  id: number;
+  UserId?: string;
+  RoomId?: string;
   checkIn: Date;
   checkOut: Date;
   totalPrice: number;
@@ -73,9 +73,10 @@ export interface Booking {
 }
 
 export interface Message {
-  id: string;
+  id: number;
   senderId: string;
   receiverId: string;
+  UserId?: string;
   subject: string;
   content: string;
   read: boolean;
@@ -83,8 +84,8 @@ export interface Message {
 }
 
 export interface Notification {
-  id: string;
-  userId: string;
+  id: number;
+  UserId?: number;
   title: string;
   message: string;
   read: boolean;

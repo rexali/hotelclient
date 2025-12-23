@@ -22,6 +22,7 @@ import HotelDetails from './components/hotel/HotelDetails';
 import ChangePasswordPage from './components/auth/ChangePasswordPage';
 import ForgetPasswordPage from './components/auth/ForgetPasswordPage';
 import ConfirmRegistrationPage from './components/auth/ConfirmRegistrationPage';
+import RoomDetailPage from './pages/RoomDetailPage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; requiredRole?: 'user' | 'admin' }> = ({
@@ -52,7 +53,8 @@ const AppContent: React.FC = () => {
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/hotels/:id" element={<HotelDetails />} />
           <Route path="/search" element={<Searchs />} />
-          <Route path="/rooms/:id" element={<RoomDetails />} />
+          {/* <Route path="/rooms/:id" element={<RoomDetails />} /> */}
+          <Route path="/rooms/:id" element={<RoomDetailPage />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

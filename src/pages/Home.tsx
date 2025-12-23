@@ -35,6 +35,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (moutRef.current) {
+
       (async () => {
         // get token and store in local storage
         try {
@@ -46,6 +47,7 @@ const Home: React.FC = () => {
 
       })();
     }
+
     return () => {
       moutRef.current = false
     }

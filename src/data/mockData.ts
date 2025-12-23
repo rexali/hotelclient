@@ -10,7 +10,7 @@ export const mockRooms: Room[] = [
     bedrooms: 1,
     bathrooms: 1,
     capacity: 1,
-    amenities: ['WiFi', 'AC', 'Study Desk', 'Wardrobe', 'Private Bathroom'],
+    amenities: ['WiFi', 'AC' , 'Study Desk', 'Wardrobe', 'Private Bathroom'],
     photos: [
       'https://photos.pexels.com/photos/164595/pexels-photo-164595.jpeg',
       'https://photos.pexels.com/photos/271618/pexels-photo-271618.jpeg'

@@ -140,7 +140,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({
           </h3>
           <div className="flex items-center space-x-1">
             {/* <Star className="h-4 w-4 text-yellow-400 fill-current" /> */}
-            {[...Array(room.rating)].map((_, i) => (
+            {[...Array(Math.ceil(room?.rating??1))].map((_, i) => (
               <Star
                 key={i}
                 className={`h-4 w-4 ${i < room.rating ? "text-yellow-400" : "text-gray-300"}`}

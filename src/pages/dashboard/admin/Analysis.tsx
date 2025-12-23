@@ -12,7 +12,9 @@ export const AnalysisTab = ()=>{
           acc[a] = (acc[a] || 0) + 1;
           return acc;
         }, {} as Record<string, number>);
+        // top ammenties
         const topAmenities = Object.entries(amenityCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        
         return (
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Room Analytics</h2>

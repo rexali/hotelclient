@@ -6,22 +6,23 @@ import { ReviewList } from './components/ReviewList';
 import ReviewAdd from './components/ReviewAdd';
 import { addFavouriteRoomAPI } from './api/addFavouriteRoomAPI';
 import { toast } from 'sonner';
-import { makePaymentAPI } from '../payment/makePaymentAPI';
+// import { makePaymentAPI } from '../payment/makePaymentAPI';
 import { useAuth } from '../context/AuthContext';
 import { handleShare } from '../utils/handleShare';
 import { handleViewLocation } from '../utils/handleViewLocation';
 import { handleContact } from '../utils/handlePhoneCall';
 import { makePaymentWithPopupAPI } from '../payment/makePaymentWithPopupAPI';
+import { getRoomById } from '../mocks';
 
 const RoomDetails: React.FC = () => {
   // If using react-router-dom v6+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [data, setData] = useState<any>({});
-  const room = data;
-  const {user} = useAuth()
-  
-const handleAddFavourite = async (roomId: any) => {
+  const room = data; //Object.keys(data ?? {}).length ? data : getRoomById(id as unknown as number);
+  const { user } = useAuth()
+
+  const handleAddFavourite = async (roomId: any) => {
     if (user.userId) {
       let result = await addFavouriteRoomAPI({ roomId, userId: user?.userId });
       if (result) {
@@ -43,8 +44,14 @@ const handleAddFavourite = async (roomId: any) => {
 
   useEffect(() => {
     (async () => {
-      let room = await getRoomAPI(id as unknown as number);      
-      setData(room);
+      let room;
+      try {
+        room = await getRoomAPI(id as unknown as number); 
+      } catch (error) {
+        console.log(error);
+      }
+      const _room = Object.keys(room ?? {}).length ? data : getRoomById(id as unknown as number);
+      setData(_room);
     })();
   }, [id])
 
@@ -66,10 +73,10 @@ const handleAddFavourite = async (roomId: any) => {
     <div className="max-w-2xl mx-auto py-8 px-4">
       <RoomDetailsCard
         room={room}
-        onFavorite={handleAddFavourite }
+        onFavorite={handleAddFavourite}
         onPayment={handlePayment}
         onShare={handleShare}
-        onViewLocation={handleViewLocation }
+        onViewLocation={handleViewLocation}
         onContact={handleContact}
         isFavorite={room?.likes?.includes(user?.userId)}
       /><br />

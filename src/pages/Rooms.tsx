@@ -14,6 +14,7 @@ import { handleViewLocation } from '../utils/handleViewLocation';
 import Pagination from '../components/common/Pagination';
 import { handleContact } from '../utils/handlePhoneCall';
 import { getSearchedRoomAPI } from './api/getSearchedRoomsAPI';
+import { getRooms } from '../mocks';
 
 
 const Rooms: React.FC = () => {
@@ -40,6 +41,8 @@ const Rooms: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [loading, setLoading] = useState<Boolean>(false);
+
 
   const featured = Boolean(searchParams.get('featured'));
   const popular = Boolean(searchParams.get('popular'));
@@ -81,8 +84,8 @@ const Rooms: React.FC = () => {
     // Redirect to payment page or open payment modal
     if (user?.userId) {
       await makePaymentAPI({ roomId, userId: user.userId, amount: roomPrice, email: user.email });
-    }  else {
-    // Redirect to login or show login modal
+    } else {
+      // Redirect to login or show login modal
       navigate("/auth")
     }
   };
@@ -91,13 +94,33 @@ const Rooms: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (filters?.hostelId) {
-        let data = await getSearchedRoomAPI({ page: currentPage, ...filters });
-        setRooms(data?.rooms);
-        setTotalPages(data?.roomCount)
+        try {
+          setLoading(true);
+          let data = await getSearchedRoomAPI({ page: currentPage, ...filters });
+          let _rooms = data?.rooms?.length ? data : getRooms();
+          setRooms(_rooms);
+          setTotalPages(data?.roomCount ?? 1)
+        } catch (error) {
+          console.error(error);
+          toast.error('Failed to load room details');
+        } finally {
+          setLoading(false)
+        }
+
       } else {
-        let data = await getRoomsAPI(currentPage);
-        setTotalPages(data?.roomCount)
-        setRooms(data?.rooms)
+        try {
+          setLoading(true);
+          let data = await getRoomsAPI(currentPage);
+          let _rooms = data?.rooms?.length ? data : getRooms();
+          setTotalPages(data?.roomCount ?? 1)
+          setRooms(_rooms);
+        } catch (error) {
+          console.error(error);
+          toast.error('Failed to load room details');
+        } finally {
+          setLoading(false);
+        }
+
       }
     })();
 
@@ -113,6 +136,15 @@ const Rooms: React.FC = () => {
     filters.bathrooms,
     filters.amenities
   ]);
+
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
 
 

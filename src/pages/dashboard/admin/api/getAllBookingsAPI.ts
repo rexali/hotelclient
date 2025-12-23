@@ -1,5 +1,3 @@
-// src/pages/dashboard/admin/api/getAllBookingAPI.ts
-
 import { config } from "../../../../config/config";
 import { ResponseType } from "../../../../types";
 
