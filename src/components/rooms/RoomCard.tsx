@@ -3,7 +3,7 @@ import { Heart, Share2, MapPin, Users, Phone, CreditCard, Star } from 'lucide-re
 import { Room } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { BASE_URL_LOCAL } from '../../constants/constants';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Image from '../common/Image';
 
 interface RoomCardProps {
@@ -26,6 +26,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
   isFavorite = false
 }) => {
 
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [checkInCheckOutForm, setCheckInCheckOutForm] = useState(false);
   const [checkInCheckOutData, setCheckInCheckOutData] = useState({
@@ -102,25 +103,18 @@ const RoomCard: React.FC<RoomCardProps> = ({
       <div className="relative h-48 overflow-hidden">
         {room?.photos?.length ? (
           <Link to={'/rooms/' + room.id}>
-            {/* <img
-              src={BASE_URL_LOCAL + "/uploads/" + room?.photos[0]}
-              alt={room?.name}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-              crossOrigin='use-credentials'
-            /> */}
             <Image
               src={BASE_URL_LOCAL + '/uploads/' + room.photos[0]}
-              defaultSrc={undefined}
               alt={room.name}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
             />
           </Link>
         ) : (
           <Link to={'/rooms/' + room.id}>
-            <img
+            <Image
               src={photos[0]}
               alt={room?.name}
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-            // crossOrigin='anonymous'
             />
           </Link>
         )
@@ -245,7 +239,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
             {room?.availability === true && (
               <button
                 onClick={() => {
-                  setCheckInCheckOutForm(true);
+                  // setCheckInCheckOutForm(true);
+                  navigate("/rooms/" + room?.id, { state: { roomId: room?.id } })
+
                 }}
                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >

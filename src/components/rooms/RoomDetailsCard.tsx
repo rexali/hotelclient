@@ -4,6 +4,7 @@ import { Room } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { BASE_URL_LOCAL } from '../../constants/constants';
 import { Link } from 'react-router-dom';
+import Image from '../common/Image';
 
 interface RoomDetailsProps {
   room: any;
@@ -95,7 +96,7 @@ const RoomDetails: React.FC<RoomDetailsProps> = ({
       <div className="relative w-full">
         <div className="flex overflow-x-auto gap-2 h-56 md:h-72">
           {room?.photos?.map((img: any, idx: any) => (
-            <img
+            <Image
               key={img + idx}
               src={BASE_URL_LOCAL + "/uploads/" + img}
               alt={room?.name + ' image'}

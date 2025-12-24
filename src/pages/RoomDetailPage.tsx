@@ -12,7 +12,7 @@ import { makePaymentWithPopupAPI } from '../payment/makePaymentWithPopupAPI';
 import { getRoomById } from '../mocks';
 import Image from '../components/common/Image';
 import { BASE_URL_LOCAL } from '../constants/constants';
-import imagex from "../assests/images/generic-hotel.jpeg";
+// import imagex from "../assests/images/generic-hotel.jpeg";
 
 
 const RoomDetailPage: React.FC = () => {
@@ -165,8 +165,8 @@ const RoomDetailPage: React.FC = () => {
                                 {room.photos && room.photos.length > 0 ? (
                                     <Image
                                         src={BASE_URL_LOCAL + '/uploads/' + room.photos[selectedImage]}
-                                        defaultSrc={undefined}
                                         alt={room.name}
+                                        className="w-full h-full object-cover"
                                     />
                                 ) : (
                                     <div className="flex items-center justify-center h-full bg-gray-300">
@@ -219,7 +219,11 @@ const RoomDetailPage: React.FC = () => {
                                                 : 'opacity-60 hover:opacity-80'
                                                 }`}
                                         >
-                                            <Image src={photo} defaultSrc={imagex} alt={`Room view ${idx + 1}`} props={{ className: "w-full h-full object-cover rounded" }} />
+                                            <Image
+                                                src={photo}
+                                                alt={`Room view ${idx + 1}`}
+                                                className="w-full h-full object-cover rounded"
+                                            />
                                         </button>
                                     ))}
                                 </div>

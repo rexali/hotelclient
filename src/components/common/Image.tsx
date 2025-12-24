@@ -20,11 +20,11 @@ let imageFiles: any;
 })()
 
 
-const Image = ({ src, defaultSrc, alt, style, ...props }: { src: any, defaultSrc: any, alt: any, style?: any, props?: any }) => {
+// const Image = ({ src, defaultSrc, alt, style, ...props }: { src: any, defaultSrc: any, alt: any, style?: any, props?: any }) => {
+const Image = ({ src = '', alt = '', ...props }) => {
 
     const [imageSrc, setImageSrc] = useState<string>(src);
     // const [randomImage, setRandomImage] = useState(null);
-
     const handleImageError = () => {
         const imageArray: Array<any> = [
             img_1,
@@ -50,9 +50,7 @@ const Image = ({ src, defaultSrc, alt, style, ...props }: { src: any, defaultSrc
         src={imageSrc}
         alt={alt}
         crossOrigin=""
-        className="w-full h-full object-cover"
         onError={handleImageError}
-        style={{ ...style }}
         {...props}
     />)
 }
